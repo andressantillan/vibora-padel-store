@@ -17,7 +17,9 @@
 
         @yield('content')
         <div class="container py-5">
-            <h2>Hola, próximamente esto va a ser Vibora Padel Store</h2>
+            <h2>Vibora Padel Store</h2>
+            <p>Sitio de venta de productos de padel</p>
+            <p>Integrantes: Santillán Andrés</p>
         </div>
         <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
     </body>
