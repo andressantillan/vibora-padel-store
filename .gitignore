@@ -3,6 +3,8 @@ node_modules/
 npm-debug.log
 yarn-error.log
 
+.agents
+
 # Laravel 4 specific
 bootstrap/compiled.php
 app/storage/
@@ -54,3 +56,4 @@ auth.json
 Homestead.json
 Homestead.yaml
 Thumbs.db
+skills-lock.json
