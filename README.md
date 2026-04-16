@@ -1,6 +1,20 @@
 # Víbora Padel Store 🎾
 
-**Desarrollado por Andrés Santillán**
+# Proyecto - Aplicaciones Web
+
+**Universidad Nacional de la Patagonia San Juan Bosco**
+
+## Alumnos
+- Andrés Santillán
+
+## Catedra
+- Diego Martinez
+- Gabriel Ingravallo
+- Guillermo Urrutia
+
+## Sitio web
+[![Vibora Padel Store](https://img.shields.io/badge/🌐_Vibora_Padel_Store-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vibora-padel-store.vercel.app/)
+
 
 ## Descripción
 
