@@ -1,0 +1,95 @@
+<div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px; min-height: 100vh;">
+
+    {{-- Logo --}}
+    <a href="{{ route('dashboard') }}"
+       class="d-flex align-items-center mb-3 text-white text-decoration-none">
+        <span class="fs-4 fw-bold">Panel de Control</span>
+    </a>
+    <hr class="border-secondary">
+
+    {{-- Navegación --}}
+    <ul class="nav nav-pills flex-column gap-1 mb-auto">
+
+        {{-- Dashboard --}}
+        <li class="nav-item">
+            <a href="{{ route('dashboard') }}"
+               class="nav-link text-white sidebar-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                <i class="bi bi-speedometer2 me-2"></i> Dashboard
+            </a>
+        </li>
+
+        {{-- Marcas --}}
+        <li class="nav-item">
+            @php $brandsActive = request()->routeIs('admin.brands.*'); @endphp
+
+            <a href="#menu-brands"
+               class="nav-link text-white sidebar-link d-flex justify-content-between align-items-center {{ $brandsActive ? 'active' : '' }}"
+               data-bs-toggle="collapse"
+               aria-expanded="{{ $brandsActive ? 'true' : 'false' }}"
+               aria-controls="menu-brands">
+                <span><i class="bi bi-tags me-2"></i> Marcas</span>
+                <i class="bi bi-chevron-down sidebar-chevron {{ $brandsActive ? 'rotated' : '' }}"></i>
+            </a>
+
+            <div class="collapse {{ $brandsActive ? 'show' : '' }}" id="menu-brands">
+                <ul class="nav flex-column ms-3 mt-1 gap-1 border-start border-secondary ps-2">
+                    <li class="nav-item">
+                        <a href="{{ route('admin.brands.index') }}"
+                           class="nav-link text-white sidebar-link {{ request()->routeIs('admin.brands.index') ? 'active' : '' }}">
+                            <i class="bi bi-list me-2"></i> Listar marcas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.brands.create') }}"
+                           class="nav-link text-white sidebar-link {{ request()->routeIs('admin.brands.create') ? 'active' : '' }}">
+                            <i class="bi bi-plus-circle me-2"></i> Nueva marca
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+
+    </ul>
+
+    <hr class="border-secondary">
+
+    {{-- Usuario logueado --}}
+    <div class="d-flex align-items-center gap-2 text-white">
+        <i class="bi bi-person-circle fs-4"></i>
+        <div class="lh-sm">
+            <span class="d-block fw-semibold" style="font-size:0.9rem">{{ auth()->user()->name }}</span>
+            <span class="text-secondary" style="font-size:0.75rem">{{ auth()->user()->email }}</span>
+        </div>
+    </div>
+</div>
+
+<style>
+.sidebar-link {
+    border-radius: 6px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.sidebar-link:hover:not(.active) {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff !important;
+}
+
+.sidebar-chevron {
+    font-size: 0.75rem;
+    transition: transform 0.25s ease;
+}
+
+.sidebar-chevron.rotated {
+    transform: rotate(-180deg);
+}
+</style>
+
+<script>
+    document.querySelectorAll('[data-bs-toggle="collapse"]').forEach(trigger => {
+        const target = document.querySelector(trigger.getAttribute('href'));
+        const chevron = trigger.querySelector('.sidebar-chevron');
+
+        target.addEventListener('show.bs.collapse', () => chevron.classList.add('rotated'));
+        target.addEventListener('hide.bs.collapse', () => chevron.classList.remove('rotated'));
+    });
+</script>

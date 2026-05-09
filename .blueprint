@@ -1,0 +1,12 @@
+created:
+    - app/Http/Controllers/BrandController.php
+    - database/factories/BrandFactory.php
+    - database/migrations/2026_04_27_224202_create_brands_table.php
+    - app/Models/Brand.php
+    - tests/Feature/Http/Controllers/BrandControllerTest.php
+    - app/Http/Requests/BrandStoreRequest.php
+    - resources/views/brands/index.blade.php
+updated:
+    - routes/web.php
+models:
+    Brand: { name: 'string:100', slug: 'string:100 unique', logo: 'string nullable', active: 'boolean default true', timestamps: timestamps }
