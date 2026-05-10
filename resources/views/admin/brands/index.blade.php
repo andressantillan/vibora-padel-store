@@ -45,7 +45,11 @@
                             <span class="text-muted">—</span>
                         @endif
                     </td>
-                    <td>{{ $brand->name }}</td>
+                    <td>
+                        <a href="{{ route('admin.brands.show', $brand) }}" class="text-decoration-none">
+                            {{ $brand->name }}
+                        </a>
+                    </td
                     <td><code>{{ $brand->slug }}</code></td>
                     <td>
                         @if($brand->active)

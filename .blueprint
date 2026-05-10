@@ -1,12 +1,21 @@
 created:
-    - app/Http/Controllers/BrandController.php
+    - database/factories/CategoryFactory.php
     - database/factories/BrandFactory.php
-    - database/migrations/2026_04_27_224202_create_brands_table.php
+    - database/migrations/2026_05_09_223337_create_categories_table.php
+    - database/migrations/2026_05_09_223338_create_brands_table.php
+    - app/Models/Category.php
     - app/Models/Brand.php
-    - tests/Feature/Http/Controllers/BrandControllerTest.php
-    - app/Http/Requests/BrandStoreRequest.php
-    - resources/views/brands/index.blade.php
-updated:
-    - routes/web.php
 models:
-    Brand: { name: 'string:100', slug: 'string:100 unique', logo: 'string nullable', active: 'boolean default true', timestamps: timestamps }
+    Brand: { name: 'string:100', slug: 'string:100 unique', logo: 'string nullable', active: 'boolean default:true', timestamps: timestamps }
+    Category: { parent_id: 'id foreign:categories nullable', name: 'string:100', slug: 'string:100 unique', description: 'text nullable', active: 'boolean default:true', timestamps: timestamps }
+    Product: { category_id: 'id foreign', brand_id: 'id foreign', name: 'string:200', slug: 'string:200 unique', description: 'text nullable', active: 'boolean default:true', timestamps: timestamps }
+    ProductVariant: { product_id: 'id foreign', sku: 'string:100 unique', price: 'decimal:10,2', color: 'string:50 nullable', size: 'string:50 nullable', weight: 'decimal:5,2 nullable', timestamps: timestamps }
+    ProductImage: { product_id: 'id foreign', url: string, is_main: 'boolean default:false', sort: 'integer default:0', timestamps: timestamps }
+    Stock: { product_variant_id: 'id foreign', quantity: 'integer default:0', min_quantity: 'integer default:5', timestamps: timestamps }
+    Customer: { user_id: 'id foreign', dni: 'string:20 nullable', phone: 'string:20 nullable', birth_date: 'date nullable', timestamps: timestamps }
+    Address: { customer_id: 'id foreign', street: string, city: 'string:100', province: 'string:100', postal_code: 'string:20', is_default: 'boolean default:false', timestamps: timestamps }
+    Order: { customer_id: 'id foreign', address_id: 'id foreign', status: "string:50 default:'pending'", subtotal: 'decimal:10,2', discount: 'decimal:10,2 default:0', total: 'decimal:10,2', coupon_code: 'string:50 nullable', timestamps: timestamps }
+    OrderItem: { order_id: 'id foreign', product_variant_id: 'id foreign', quantity: integer, unit_price: 'decimal:10,2', timestamps: timestamps }
+    OrderStatusHistory: { order_id: 'id foreign', status: 'string:50', notes: 'text nullable', timestamps: timestamps }
+    Shipment: { order_id: 'id foreign', carrier: 'string:100 nullable', tracking_number: 'string:100 nullable', status: "string:50 default:'pending'", shipped_at: 'timestamp nullable', timestamps: timestamps }
+    Payment: { order_id: 'id foreign', method: 'string:50', amount: 'decimal:10,2', status: "string:50 default:'pending'", reference: 'string:100 nullable', paid_at: 'timestamp nullable', timestamps: timestamps }

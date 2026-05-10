@@ -49,6 +49,37 @@
             </div>
         </li>
 
+        {{-- Categorias --}}
+        <li class="nav-item">
+            @php $categoriesActive = request()->routeIs('admin.categories.*'); @endphp
+
+            <a href="#menu-categories"
+            class="nav-link text-white sidebar-link d-flex justify-content-between align-items-center {{ $categoriesActive ? 'active' : '' }}"
+            data-bs-toggle="collapse"
+            aria-expanded="{{ $categoriesActive ? 'true' : 'false' }}"
+            aria-controls="menu-categories">
+                <span><i class="bi bi-folder2 me-2"></i> Categorías</span>
+                <i class="bi bi-chevron-down sidebar-chevron {{ $categoriesActive ? 'rotated' : '' }}"></i>
+            </a>
+
+            <div class="collapse {{ $categoriesActive ? 'show' : '' }}" id="menu-categories">
+                <ul class="nav flex-column ms-3 mt-1 gap-1 border-start border-secondary ps-2">
+                    <li class="nav-item">
+                        <a href="{{ route('admin.categories.index') }}"
+                        class="nav-link text-white sidebar-link {{ request()->routeIs('admin.categories.index') ? 'active' : '' }}">
+                            <i class="bi bi-list me-2"></i> Listar categorías
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.categories.create') }}"
+                        class="nav-link text-white sidebar-link {{ request()->routeIs('admin.categories.create') ? 'active' : '' }}">
+                            <i class="bi bi-plus-circle me-2"></i> Nueva categoría
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+
     </ul>
 
     <hr class="border-secondary">
