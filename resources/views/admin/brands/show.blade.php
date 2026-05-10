@@ -52,8 +52,8 @@
         <div class="card h-100">
             <div class="card-header fw-semibold">Logo</div>
             <div class="card-body d-flex align-items-center justify-content-center">
-                @if($brand->logo)
-                    <img src="{{ Storage::url($brand->logo) }}"
+                @if($brand->logo_url)
+                    <img src="{{ Storage::url($brand->logo_url) }}"
                          alt="Logo de {{ $brand->name }}"
                          class="img-fluid rounded"
                          style="max-height: 160px; object-fit: contain;">

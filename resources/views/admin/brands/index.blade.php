@@ -36,8 +36,8 @@
                 <tr>
                     <td class="text-muted">{{ $brand->id }}</td>
                     <td>
-                        @if($brand->logo)
-                            <img src="{{ Storage::url($brand->logo) }}"
+                        @if($brand->logo_url)
+                            <img src="{{ Storage::url($brand->logo_url) }}"
                                  alt="{{ $brand->name }}"
                                  class="rounded"
                                  style="width:40px;height:40px;object-fit:contain">
@@ -49,7 +49,7 @@
                         <a href="{{ route('admin.brands.show', $brand) }}" class="text-decoration-none">
                             {{ $brand->name }}
                         </a>
-                    </td
+                    </td>
                     <td><code>{{ $brand->slug }}</code></td>
                     <td>
                         @if($brand->active)
