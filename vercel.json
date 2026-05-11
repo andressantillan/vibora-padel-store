@@ -35,7 +35,7 @@
     "env": {
         "APP_NAME": "Vibora Padel Store",
         "APP_ENV": "production",
-        "APP_DEBUG": "false",
+        "APP_DEBUG": "true",
         "APP_KEY": "base64:1xPP40142C6Tf3rMMZ2iKEfRA2j5QWVrxlLh1u2Ybbw=",
         "VERCEL_DEMO_MODE": "true",
         "APP_CONFIG_CACHE": "/tmp/config.php",
