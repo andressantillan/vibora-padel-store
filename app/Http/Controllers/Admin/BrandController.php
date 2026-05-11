@@ -27,7 +27,7 @@ class BrandController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('logo')) {
-            $data['logo_url'] = $request->file('logo')->store('brands', 'public');
+            //$data['logo_url'] = $request->file('logo')->store('brands', 'public');
         }
 
         Brand::create($data);
@@ -54,9 +54,9 @@ class BrandController extends Controller
         if ($request->hasFile('logo')) {
             // Elimina el logo anterior si existe
             if ($brand->logo) {
-                Storage::disk('public')->delete($brand->logo_url);
+                //Storage::disk('public')->delete($brand->logo_url);
             }
-            $data['logo_url'] = $request->file('logo')->store('brands', 'public');
+            //$data['logo_url'] = $request->file('logo')->store('brands', 'public');
         }
 
         $brand->update($data);
