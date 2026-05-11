@@ -37,7 +37,7 @@
                     <td class="text-muted">{{ $brand->id }}</td>
                     <td>
                         @if($brand->logo_url)
-                            <img src="{{ Storage::url($brand->logo_url) }}"
+                            <img src="{{ $brand->logo_url }}"
                                  alt="{{ $brand->name }}"
                                  class="rounded"
                                  style="width:40px;height:40px;object-fit:contain">

@@ -7,6 +7,7 @@ use App\Http\Requests\StoreBrandRequest;
 use App\Http\Requests\UpdateBrandRequest;
 use App\Models\Brand;
 use Illuminate\Support\Facades\Storage;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class BrandController extends Controller
 {
@@ -27,7 +28,9 @@ class BrandController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('logo')) {
-            //$data['logo_url'] = $request->file('logo')->store('brands', 'public');
+            $path = $request->file('logo')->store('brands', 'cloudinary');
+            $data['logo_url']       = Storage::disk('cloudinary')->url($path);
+            $data['logo_public_id'] = $path;
         }
 
         Brand::create($data);
@@ -53,10 +56,13 @@ class BrandController extends Controller
 
         if ($request->hasFile('logo')) {
             // Elimina el logo anterior si existe
-            if ($brand->logo) {
-                //Storage::disk('public')->delete($brand->logo_url);
+            if ($brand->logo_public_id) {
+                Storage::disk('cloudinary')->delete($brand->logo_public_id);
             }
-            //$data['logo_url'] = $request->file('logo')->store('brands', 'public');
+
+            $path = $request->file('logo')->store('brands', 'cloudinary');
+            $data['logo_url']       = Storage::disk('cloudinary')->url($path);
+            $data['logo_public_id'] = $path;
         }
 
         $brand->update($data);
@@ -68,8 +74,8 @@ class BrandController extends Controller
 
     public function destroy(Brand $brand)
     {
-        if ($brand->logo_url) {
-            Storage::disk('public')->delete($brand->logo_url);
+        if ($brand->logo_public_id) {
+            Storage::disk('cloudinary')->delete($brand->logo_public_id);
         }
 
         $brand->delete();

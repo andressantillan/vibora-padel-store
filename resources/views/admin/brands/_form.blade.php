@@ -15,9 +15,9 @@
 {{-- Logo --}}
 <div class="mb-3">
     <label for="logo" class="form-label fw-semibold">Logo</label>
-    @if(!empty($brand->logo))
+    @if(!empty($brand->logo_url))
         <div class="mb-2">
-            <img src="{{ Storage::url($brand->logo) }}"
+            <img src="{{ $brand->logo_url }}"
                  alt="Logo actual"
                  class="rounded border"
                  style="height:60px;object-fit:contain">
