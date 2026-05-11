@@ -103,14 +103,16 @@ class ProductController extends Controller
         $hasMainImage  = $product->images()->where('is_main', true)->exists();
 
         foreach ($request->file('images') as $index => $file) {
-            $publicId = 'padel/products/' . Str::slug($product->name) . '_' . uniqid();
-            $file->storeAs('', $publicId, 'cloudinary');
+            
+            $path = $file->store('products', 'cloudinary');
+            $url = Storage::disk('cloudinary')->url($path);
+            $publicId = $path;
 
             $isMain = !$hasMainImage && $index === (int) $mainIndex;
 
             ProductImage::create([
                 'product_id' => $product->id,
-                'url'        => Storage::disk('cloudinary')->url($publicId),
+                'url'        => $url,
                 'public_id'  => $publicId,
                 'is_main'    => $isMain,
                 'sort'       => ++$currentSort,
