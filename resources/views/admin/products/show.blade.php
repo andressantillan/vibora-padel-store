@@ -87,7 +87,10 @@
                     Variantes
                     <span class="badge bg-secondary ms-1">{{ $product->variants->count() }}</span>
                 </span>
-                <a href="#" class="btn btn-sm btn-outline-primary">+ Agregar variante</a>
+                <button type="button" class="btn btn-sm btn-outline-primary"
+                        data-bs-toggle="modal" data-bs-target="#modalVariant">
+                    + Agregar variante
+                </button>
             </div>
             <div class="card-body p-0">
                 @if($product->variants->isNotEmpty())
@@ -100,6 +103,7 @@
                                 <th>Peso</th>
                                 <th>Precio</th>
                                 <th>Stock</th>
+                                <th style="width:120px"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -112,12 +116,27 @@
                                 <td>${{ number_format($variant->price, 2) }}</td>
                                 <td>
                                     @if($variant->stock)
-                                        <span class="badge {{ $variant->stock->quantity <= $variant->stock->min_quantity ? 'bg-danger' : 'bg-success' }}">
+                                        <span class="badge {{ $variant->stock->isLow() ? 'bg-danger' : 'bg-success' }}">
                                             {{ $variant->stock->quantity }}
                                         </span>
                                     @else
                                         <span class="text-muted">—</span>
                                     @endif
+                                </td>
+                                <td class="text-end">
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-secondary"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modalEditVariant{{ $variant->id }}">
+                                        Editar
+                                    </button>
+                                    <form action="{{ route('admin.variants.destroy', $variant) }}"
+                                        method="POST" class="d-inline"
+                                        onsubmit="return confirm('¿Eliminar esta variante?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-sm btn-outline-danger">Eliminar</button>
+                                    </form>
                                 </td>
                             </tr>
                             @endforeach
@@ -129,5 +148,53 @@
             </div>
         </div>
     </div>
+
+    {{-- Modal crear variante --}}
+    <div class="modal fade" id="modalVariant" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{{ route('admin.variants.store') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Nueva variante</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        @include('admin.products._variant_form')
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar variante</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- Modales editar variante --}}
+    @foreach($product->variants as $variant)
+    <div class="modal fade" id="modalEditVariant{{ $variant->id }}" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{{ route('admin.variants.update', $variant) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-header">
+                        <h5 class="modal-title">Editar variante: {{ $variant->sku }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        @include('admin.products._variant_form', ['variant' => $variant])
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Actualizar variante</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @endforeach
 </div>
 @endsection

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ProductVariant extends Model
+class Stock extends Model
 {
     use HasFactory;
 
@@ -16,12 +16,9 @@ class ProductVariant extends Model
      * @var array
      */
     protected $fillable = [
-        'product_id',
-        'sku',
-        'price',
-        'color',
-        'size',
-        'weight',
+        'product_variant_id',
+        'quantity',
+        'min_quantity',
     ];
 
     /**
@@ -33,19 +30,17 @@ class ProductVariant extends Model
     {
         return [
             'id' => 'integer',
-            'product_id' => 'integer',
-            'price' => 'decimal:2',
-            'weight' => 'decimal:2',
+            'product_variant_id' => 'integer',
         ];
     }
 
-    public function product(): BelongsTo
+    public function productVariant(): BelongsTo
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(ProductVariant::class);
     }
 
-     public function stock()
+     public function isLow(): bool
     {
-        return $this->hasOne(Stock::class);
+        return $this->quantity <= $this->min_quantity;
     }
 }

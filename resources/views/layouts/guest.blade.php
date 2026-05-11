@@ -4,7 +4,11 @@
         @include('layouts.partials.head')
         <title>@yield('title', 'Víbora Padel Store')</title>
     </head>
-
+    <style>
+        body {
+            font-family: 'Noto Sans', sans-serif;
+        }
+    </style>
     <body>
 
         <div class="container-fluid py-5 text-center">
