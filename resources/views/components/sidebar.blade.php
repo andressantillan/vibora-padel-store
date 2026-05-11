@@ -79,8 +79,39 @@
                 </ul>
             </div>
         </li>
-
+        
+        {{-- Productos --}}
+        <li class="nav-item">
+            @php $productsActive = request()->routeIs('admin.products.*'); @endphp
+    
+            <a href="#menu-products"
+            class="nav-link text-white sidebar-link d-flex justify-content-between align-items-center {{ $productsActive ? 'active' : '' }}"
+            data-bs-toggle="collapse"
+            aria-expanded="{{ $productsActive ? 'true' : 'false' }}"
+            aria-controls="menu-products">
+                <span><i class="bi bi-box-seam me-2"></i> Productos</span>
+                <i class="bi bi-chevron-down sidebar-chevron {{ $productsActive ? 'rotated' : '' }}"></i>
+            </a>
+    
+            <div class="collapse {{ $productsActive ? 'show' : '' }}" id="menu-products">
+                <ul class="nav flex-column ms-3 mt-1 gap-1 border-start border-secondary ps-2">
+                    <li class="nav-item">
+                        <a href="{{ route('admin.products.index') }}"
+                        class="nav-link text-white sidebar-link {{ request()->routeIs('admin.products.index') ? 'active' : '' }}">
+                            <i class="bi bi-list me-2"></i> Listar productos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.products.create') }}"
+                        class="nav-link text-white sidebar-link {{ request()->routeIs('admin.products.create') ? 'active' : '' }}">
+                            <i class="bi bi-plus-circle me-2"></i> Nuevo producto
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </li>
     </ul>
+
 
     <hr class="border-secondary">
 

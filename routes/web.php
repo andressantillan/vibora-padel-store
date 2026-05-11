@@ -34,3 +34,12 @@ Route::prefix('admin')
         Route::resource('brands', \App\Http\Controllers\Admin\BrandController::class);
         Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
     });
+
+Route::prefix('admin')
+    ->name('admin.')
+    ->middleware(['auth'])
+    ->group(function () {
+        Route::resource('brands', \App\Http\Controllers\Admin\BrandController::class);
+        Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
+        Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
+    });
