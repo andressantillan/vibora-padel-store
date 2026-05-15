@@ -61,7 +61,7 @@ class BrandController extends Controller
             }
 
             $path = $request->file('logo')->store('brands', 'cloudinary');
-            $data['logo_url']       = Storage::disk('cloudinary')->url($path);
+            $data['logo_url'] = Storage::disk('cloudinary')->url($path);
             $data['logo_public_id'] = $path;
         }
 
@@ -74,6 +74,13 @@ class BrandController extends Controller
 
     public function destroy(Brand $brand)
     {
+
+        if ($brand->products()->exists()) {
+            return redirect()
+                ->route('admin.brands.index')
+                ->with('error', 'No se puede eliminar la marca porque tiene productos asociados.');
+        }
+
         if ($brand->logo_public_id) {
             Storage::disk('cloudinary')->delete($brand->logo_public_id);
         }

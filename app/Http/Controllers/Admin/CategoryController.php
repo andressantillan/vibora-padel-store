@@ -51,6 +51,13 @@ class CategoryController extends Controller
 
     public function destroy(Category $category)
     {
+
+        if ($category->products()->exists()) {
+            return redirect()
+                ->route('admin.categories.index')
+                ->with('error', 'No se puede eliminar la categoría porque tiene productos asociados.');
+        }
+
         $category->delete();
 
         return redirect()

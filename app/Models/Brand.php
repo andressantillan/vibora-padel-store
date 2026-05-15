@@ -34,4 +34,12 @@ class Brand extends Model
             'active' => 'boolean',
         ];
     }
+
+    /**
+     * Get the products for the brand.
+     */
+    public function products(){
+        return $this->hasMany(Product::class);
+    }
+
 }

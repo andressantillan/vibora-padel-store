@@ -48,6 +48,13 @@ class ProductVariantController extends Controller
     public function destroy(ProductVariant $variant)
     {
         $productId = $variant->product_id;
+
+        if($variant->stock()->count() > 0) {
+            return redirect()
+                ->route('admin.products.show', $productId)
+                ->with('error', 'No se puede eliminar la variante porque hay stock existente.');
+        }
+
         $variant->stock()->delete();
         $variant->delete();
 

@@ -81,8 +81,15 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
+        if ($product->variants()->exists()) {
+            return redirect()
+                ->route('admin.products.index')
+                ->with('error', 'No se puede eliminar el producto porque tiene variantes asociadas.');
+        }
+    
         foreach ($product->images as $image) {
             Storage::disk('cloudinary')->delete($image->public_id);
+            $image->delete();
         }
 
         $product->delete();
