@@ -49,7 +49,7 @@ class ProductVariantController extends Controller
     {
         $productId = $variant->product_id;
 
-        if($variant->stock()->count() > 0) {
+        if($variant->stock()->where('quantity', '>', 0)->exists()) {
             return redirect()
                 ->route('admin.products.show', $productId)
                 ->with('error', 'No se puede eliminar la variante porque hay stock existente.');
