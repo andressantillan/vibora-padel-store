@@ -16,7 +16,7 @@
     </head>
     <style>
         .logo {
-            max-width: 300px;
+            max-width: 400px;
             height: auto;
         }
 
@@ -43,9 +43,12 @@
 
             {{-- Título --}}
             <h1 class="fw-bold mb-3">Víbora Padel Store</h1>
-
+            {{-- Ir a iniciar sesion --}}
+            <button class="btn btn-primary px-4 py-2" onclick="window.location.href='{{ route('login') }}'">
+                Iniciar sesión
+            </button>
             {{-- Descripción --}}
-            <p class="text-muted mx-auto mb-4" style="max-width: 520px; font-size: 1.05rem; line-height: 1.7;">
+            <p class="text-muted mx-auto mb-4 mt-4" style="max-width: 520px; font-size: 1.05rem; line-height: 1.7;">
                 Tu tienda online especializada en pádel. Palas, pelotas, ropa, calzado 
                 y accesorios para llevar tu juego al siguiente nivel.
             </p>
@@ -71,9 +74,9 @@
                     </div>
                 </div>
             </div>
-
+            
             {{-- Autor --}}
-            <p class="text-muted" style="font-size: 0.8rem;">
+            <p class="text-muted mt-3" style="font-size: 0.8rem;">
                 Desarrollado por <strong>Santillán Andrés</strong>
             </p>
         </div>
