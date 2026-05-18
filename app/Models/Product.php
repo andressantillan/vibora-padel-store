@@ -10,6 +10,18 @@ class Product extends Model
 {
     use HasFactory;
 
+    const SHAPES = [
+        'redonda'  => 'Redonda',
+        'lagrima'  => 'Lágrima',
+        'diamante' => 'Diamante',
+    ];
+
+    const LEVELS = [
+        'iniciacion' => 'Iniciación',
+        'intermedio' => 'Intermedio',
+        'avanzado'   => 'Avanzado',
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -21,6 +33,8 @@ class Product extends Model
         'name',
         'slug',
         'description',
+        'shape',
+        'level',
         'active',
     ];
 

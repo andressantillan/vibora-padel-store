@@ -23,6 +23,8 @@ class UpdateProductRequest extends FormRequest
             'slug'        => ['required', 'string', 'max:200', "unique:products,slug,{$productId}"],
             'description' => ['nullable', 'string'],
             'active'      => ['boolean'],
+            'shape' => ['nullable', 'in:redonda,lagrima,diamante'],
+            'level' => ['nullable', 'in:iniciacion,intermedio,avanzado'],
 
             // Imágenes
             'images'           => ['nullable', 'array'],
@@ -40,6 +42,8 @@ class UpdateProductRequest extends FormRequest
             'brand_id.required'    => 'La marca es obligatoria.',
             'name.required'        => 'El nombre del producto es obligatorio.',
             'name.unique'          => 'Ya existe un producto con ese nombre.',
+            'shape.in'             => 'La forma seleccionada no es válida.',
+            'level.in'             => 'El nivel seleccionado no es válido.',
         ];
     }
 

@@ -5,9 +5,7 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0">Productos</h1>
-    <a href="{{ route('admin.products.create') }}" class="btn btn-primary">
-        + Nuevo producto
-    </a>
+    <x-new-button :route="route('admin.products.create')" label="Nuevo producto" />
 </div>
 
 @if(session('success'))
@@ -66,16 +64,12 @@
                             <span class="badge bg-secondary">Inactivo</span>
                         @endif
                     </td>
-                    <td class="text-end">
-                        <a href="{{ route('admin.products.edit', $product) }}"
-                           class="btn btn-sm btn-outline-secondary">Editar</a>
-                        <form action="{{ route('admin.products.destroy', $product) }}"
-                              method="POST" class="d-inline"
-                              onsubmit="return confirm('¿Eliminar este producto?')">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-sm btn-outline-danger">Eliminar</button>
-                        </form>
+                    <td class="d-flex justify-content-end gap-2">
+                        <x-row-actions
+                            :show-route="route('admin.products.show', $product)"
+                            :edit-route="route('admin.products.edit', $product)"
+                            :delete-route="route('admin.products.destroy', $product)"
+                            item-name="el producto {{ $product->name }}" />
                     </td>
                 </tr>
                 @empty

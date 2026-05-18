@@ -1,16 +1,3 @@
-{{-- SKU --}}
-<div class="mb-3">
-    <label class="form-label fw-semibold">SKU <span class="text-danger">*</span></label>
-    <input type="text"
-           name="sku"
-           value="{{ old('sku', $variant->sku ?? '') }}"
-           class="form-control @error('sku') is-invalid @enderror"
-           placeholder="Ej: HEAD-DELTA-PRO-BL-370">
-    @error('sku')
-        <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
-</div>
-
 {{-- Precio --}}
 <div class="mb-3">
     <label class="form-label fw-semibold">Precio <span class="text-danger">*</span></label>

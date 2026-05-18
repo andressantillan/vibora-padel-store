@@ -5,14 +5,9 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0">{{ $brand->name }}</h1>
-    <div class="d-flex gap-2">
-        <a href="{{ route('admin.brands.edit', $brand) }}" class="btn btn-outline-secondary">
-            Editar
-        </a>
-        <a href="{{ route('admin.brands.index') }}" class="btn btn-outline-secondary">
-            ← Volver
-        </a>
-    </div>
+    <x-show-actions
+        :edit-route="route('admin.brands.edit', $brand)"
+        :back-route="route('admin.brands.index')" />
 </div>
 
 <div class="row g-4">

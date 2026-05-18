@@ -18,10 +18,9 @@
 @endif
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0">{{ $product->name }}</h1>
-    <div class="d-flex gap-2">
-        <a href="{{ route('admin.products.edit', $product) }}" class="btn btn-outline-secondary">Editar</a>
-        <a href="{{ route('admin.products.index') }}" class="btn btn-outline-secondary">← Volver</a>
-    </div>
+    <x-show-actions
+        :edit-route="route('admin.products.edit', $product)"
+        :back-route="route('admin.products.index')" />
 </div>
 
 <div class="row g-4">
@@ -45,6 +44,14 @@
 
                     <dt class="col-sm-4">Descripción</dt>
                     <dd class="col-sm-8">{{ $product->description ?? '—' }}</dd>
+
+                    @if($product->shape || $product->level)
+                        <dt class="col-sm-4">Forma</dt>
+                        <dd class="col-sm-8">{{ \App\Models\Product::SHAPES[$product->shape] ?? '—' }}</dd>
+
+                        <dt class="col-sm-4">Nivel</dt>
+                        <dd class="col-sm-8">{{ \App\Models\Product::LEVELS[$product->level] ?? '—' }}</dd>
+                    @endif
 
                     <dt class="col-sm-4">Estado</dt>
                     <dd class="col-sm-8">
@@ -100,9 +107,8 @@
                     Variantes
                     <span class="badge bg-secondary ms-1">{{ $product->variants->count() }}</span>
                 </span>
-                <button type="button" class="btn btn-sm btn-outline-primary"
-                        data-bs-toggle="modal" data-bs-target="#modalVariant">
-                    + Agregar variante
+                <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modalVariant">
+                    <i class="bi bi-plus-lg me-1"></i> Agregar variante
                 </button>
             </div>
             <div class="card-body p-0">
@@ -136,20 +142,8 @@
                                         <span class="text-muted">—</span>
                                     @endif
                                 </td>
-                                <td class="text-end">
-                                    <button type="button"
-                                            class="btn btn-sm btn-outline-secondary"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#modalEditVariant{{ $variant->id }}">
-                                        Editar
-                                    </button>
-                                    <form action="{{ route('admin.variants.destroy', $variant) }}"
-                                        method="POST" class="d-inline"
-                                        onsubmit="return confirm('¿Eliminar esta variante?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="btn btn-sm btn-outline-danger">Eliminar</button>
-                                    </form>
+                                <td class="d-flex justify-content-end gap-1">
+                                    <x-variant-actions :variant="$variant" />
                                 </td>
                             </tr>
                             @endforeach

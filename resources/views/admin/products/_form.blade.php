@@ -34,6 +34,50 @@
                     @enderror
                 </div>
 
+                {{-- Shape y Level (solo paletas) --}}
+                <div id="paleta-fields" style="display:none">
+                    <hr>
+                    <p class="text-muted fw-semibold mb-3">Especificaciones de paleta</p>
+
+                    <div class="row g-2">
+                        {{-- Forma --}}
+                        <div class="col-md-6 mb-3">
+                            <label for="shape" class="form-label fw-semibold">Forma</label>
+                            <select name="shape" id="shape"
+                                    class="form-select @error('shape') is-invalid @enderror">
+                                <option value="">— Seleccioná una forma —</option>
+                                @foreach(\App\Models\Product::SHAPES as $value => $label)
+                                    <option value="{{ $value }}"
+                                        {{ old('shape', $product->shape ?? '') == $value ? 'selected' : '' }}>
+                                        {{ $label }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('shape')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        {{-- Nivel --}}
+                        <div class="col-md-6 mb-3">
+                            <label for="level" class="form-label fw-semibold">Nivel</label>
+                            <select name="level" id="level"
+                                    class="form-select @error('level') is-invalid @enderror">
+                                <option value="">— Seleccioná un nivel —</option>
+                                @foreach(\App\Models\Product::LEVELS as $value => $label)
+                                    <option value="{{ $value }}"
+                                        {{ old('level', $product->level ?? '') == $value ? 'selected' : '' }}>
+                                        {{ $label }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('level')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+
                 {{-- Imágenes --}}
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Imágenes</label>
@@ -148,3 +192,17 @@
         </div>
     </div>
 </div>
+
+{{-- Script para mostrar/ocultar campos de paleta --}}
+<script>
+    const categorySelect  = document.getElementById('category_id');
+    const paletaFields    = document.getElementById('paleta-fields');
+    const paletaCategoryId = "{{ \App\Models\Category::where('slug', 'paletas')->value('id') }}";
+
+    function togglePaletaFields() {
+        paletaFields.style.display = categorySelect.value == paletaCategoryId ? 'block' : 'none';
+    }
+
+    categorySelect.addEventListener('change', togglePaletaFields);
+    togglePaletaFields(); // ejecutar al cargar en edición
+</script>

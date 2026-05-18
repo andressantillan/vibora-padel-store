@@ -5,9 +5,7 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0">Categorías</h1>
-    <a href="{{ route('admin.categories.create') }}" class="btn btn-primary">
-        + Nueva categoría
-    </a>
+    <x-new-button :route="route('admin.categories.create')" label="Nueva categoría" />
 </div>
 
 @if(session('success'))
@@ -52,16 +50,12 @@
                             <span class="badge bg-secondary">Inactiva</span>
                         @endif
                     </td>
-                    <td class="text-end">
-                        <a href="{{ route('admin.categories.edit', $category) }}"
-                        class="btn btn-sm btn-outline-secondary">Editar</a>
-                        <form action="{{ route('admin.categories.destroy', $category) }}"
-                            method="POST" class="d-inline"
-                            onsubmit="return confirm('¿Eliminar esta categoría?')">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-sm btn-outline-danger">Eliminar</button>
-                        </form>
+                    <td class="d-flex justify-content-end gap-2">
+                        <x-row-actions
+                            :show-route="route('admin.categories.show', $category)"
+                            :edit-route="route('admin.categories.edit', $category)"
+                            :delete-route="route('admin.categories.destroy', $category)"
+                            item-name="la categoría {{ $category->name }}" />
                     </td>
                 </tr>
                 @empty

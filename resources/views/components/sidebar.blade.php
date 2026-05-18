@@ -116,12 +116,27 @@
     <hr class="border-secondary">
 
     {{-- Usuario logueado --}}
-    <div class="d-flex align-items-center gap-2 text-white">
-        <i class="bi bi-person-circle fs-4"></i>
-        <div class="lh-sm">
-            <span class="d-block fw-semibold" style="font-size:0.9rem">{{ auth()->user()->name }}</span>
-            <span class="text-secondary" style="font-size:0.75rem">{{ auth()->user()->email }}</span>
+    <div class="user-panel d-flex justify-content-between align-items-center gap-2 p-2 rounded">
+        <div class="d-flex align-items-center gap-2 text-white flex-grow-1 overflow-hidden">
+            <i class="bi bi-person-circle fs-3 text-secondary"></i>
+            <div class="lh-sm overflow-hidden">
+                <span class="d-block fw-semibold text-truncate" style="font-size:0.9rem">
+                    {{ auth()->user()->name }}
+                </span>
+                <span class="text-secondary text-truncate d-block" style="font-size:0.75rem">
+                    {{ auth()->user()->email }}
+                </span>
+            </div>
         </div>
+
+        <form method="POST" action="{{ route('logout') }}" class="flex-shrink-0">
+            @csrf
+            <button type="submit"
+                    class="btn btn-sm btn-outline-light border-0 logout-btn"
+                    title="Cerrar sesión">
+                <i class="bi bi-box-arrow-right fs-5"></i>
+            </button>
+        </form>
     </div>
 </div>
 
@@ -143,6 +158,25 @@
 
 .sidebar-chevron.rotated {
     transform: rotate(-180deg);
+}
+
+.user-panel {
+    background-color: rgba(255, 255, 255, 0.05);
+    transition: background-color 0.2s ease;
+}
+
+.user-panel:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.logout-btn {
+    color: #dee2e6;
+    transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.logout-btn:hover {
+    color: #ff6b6b;
+    background-color: rgba(255, 107, 107, 0.1);
 }
 </style>
 
