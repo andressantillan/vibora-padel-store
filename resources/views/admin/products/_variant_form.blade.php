@@ -5,7 +5,7 @@
         <span class="input-group-text">$</span>
         <input type="number"
                name="price"
-               value="{{ old('price', $variant->price ?? '') }}"
+               value="{{ old('price') }}"
                class="form-control @error('price') is-invalid @enderror"
                step="0.01" min="0"
                placeholder="0.00">
@@ -21,7 +21,7 @@
         <label class="form-label fw-semibold">Color</label>
         <input type="text"
                name="color"
-               value="{{ old('color', $variant->color ?? '') }}"
+               value="{{ old('color') }}"
                class="form-control"
                placeholder="Ej: Negro">
     </div>
@@ -31,7 +31,7 @@
         <label class="form-label fw-semibold">Talle</label>
         <input type="text"
                name="size"
-               value="{{ old('size', $variant->size ?? '') }}"
+               value="{{ old('size') }}"
                class="form-control"
                placeholder="Ej: S, M, L, XL">
     </div>
@@ -42,7 +42,7 @@
     <label class="form-label fw-semibold">Peso (kg)</label>
     <input type="number"
            name="weight"
-           value="{{ old('weight', $variant->weight ?? '') }}"
+           value="{{ old('weight') }}"
            class="form-control"
            step="0.01" min="0"
            placeholder="Ej: 0.37">
@@ -56,7 +56,7 @@
         <label class="form-label fw-semibold">Stock actual <span class="text-danger">*</span></label>
         <input type="number"
                name="quantity"
-               value="{{ old('quantity', $variant->stock->quantity ?? 0) }}"
+               value="{{ old('quantity') }}"
                class="form-control @error('quantity') is-invalid @enderror"
                min="0">
         @error('quantity')
@@ -69,7 +69,7 @@
         <label class="form-label fw-semibold">Stock mínimo <span class="text-danger">*</span></label>
         <input type="number"
                name="min_quantity"
-               value="{{ old('min_quantity', $variant->stock->min_quantity ?? 5) }}"
+               value="{{ old('min_quantity') }}"
                class="form-control @error('min_quantity') is-invalid @enderror"
                min="0">
         @error('min_quantity')

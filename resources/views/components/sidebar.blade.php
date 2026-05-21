@@ -110,6 +110,38 @@
                 </ul>
             </div>
         </li>
+
+        {{-- Clientes --}}
+        <li class="nav-item">
+            @php $customersActive = request()->routeIs('admin.customers.*'); @endphp
+
+            <a href="#menu-customers"
+            class="nav-link text-white sidebar-link d-flex justify-content-between align-items-center {{ $customersActive ? 'active' : '' }}"
+            data-bs-toggle="collapse"
+            aria-expanded="{{ $customersActive ? 'true' : 'false' }}"
+            aria-controls="menu-customers">
+                <span><i class="bi bi-people me-2"></i> Clientes</span>
+                <i class="bi bi-chevron-down sidebar-chevron {{ $customersActive ? 'rotated' : '' }}"></i>
+            </a>
+
+            <div class="collapse {{ $customersActive ? 'show' : '' }}" id="menu-customers">
+                <ul class="nav flex-column ms-3 mt-1 gap-1 border-start border-secondary ps-2">
+                    <li class="nav-item">
+                        <a href="{{ route('admin.customers.index') }}"
+                        class="nav-link text-white sidebar-link {{ request()->routeIs('admin.customers.index') ? 'active' : '' }}">
+                            <i class="bi bi-list me-2"></i> Listar clientes
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.customers.create') }}"
+                        class="nav-link text-white sidebar-link {{ request()->routeIs('admin.customers.create') ? 'active' : '' }}">
+                            <i class="bi bi-plus-circle me-2"></i> Nuevo cliente
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+        
     </ul>
 
 

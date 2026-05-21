@@ -155,53 +155,136 @@
             </div>
         </div>
     </div>
-
-    {{-- Modal crear variante --}}
-    <div class="modal fade" id="modalVariant" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form action="{{ route('admin.variants.store') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Nueva variante</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        @include('admin.products._variant_form')
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Guardar variante</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    {{-- Modales editar variante --}}
-    @foreach($product->variants as $variant)
-    <div class="modal fade" id="modalEditVariant{{ $variant->id }}" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form action="{{ route('admin.variants.update', $variant) }}" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <div class="modal-header">
-                        <h5 class="modal-title">Editar variante: {{ $variant->sku }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        @include('admin.products._variant_form', ['variant' => $variant])
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Actualizar variante</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    @endforeach
 </div>
+{{-- Modal crear variante --}}
+<div class="modal fade" id="modalVariant" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ route('admin.variants.store') }}" method="POST">
+                @csrf
+                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nueva variante</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    @include('admin.products._variant_form')
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar variante</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- Modal editar variante (único) --}}
+<div class="modal fade" id="modalEditVariant" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editVariantForm" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar variante</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Precio</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" name="price" id="edit_price" class="form-control" step="0.01" min="0">
+                        </div>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Color</label>
+                            <input type="text" name="color" id="edit_color" class="form-control">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Talle</label>
+                            <input type="text" name="size" id="edit_size" class="form-control">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Peso (kg)</label>
+                        <input type="number" name="weight" id="edit_weight" class="form-control" step="0.01" min="0">
+                    </div>
+                    <hr>
+                    <div class="row g-2">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Stock actual</label>
+                            <input type="number" name="quantity" id="edit_quantity" class="form-control" min="0">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Stock mínimo</label>
+                            <input type="number" name="min_quantity" id="edit_min_quantity" class="form-control" min="0">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Actualizar variante</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- Modal eliminar variante (único) --}}
+<div class="modal fade" id="modalDeleteVariant" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form id="deleteVariantForm" method="POST">
+                @csrf
+                @method('DELETE')
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-exclamation-triangle text-danger me-2"></i>
+                        Confirmar eliminación
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0">¿Eliminar la variante <strong id="delete_variant_label"></strong>?</p>
+                    <p class="text-muted small mt-2 mb-0">Se eliminará también su stock asociado.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash me-1"></i> Eliminar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Editar variante
+document.querySelectorAll('.edit-variant-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const form = document.getElementById('editVariantForm');
+        form.action = `/admin/variants/${btn.dataset.id}`;
+
+        document.getElementById('edit_price').value        = btn.dataset.price;
+        document.getElementById('edit_color').value        = btn.dataset.color;
+        document.getElementById('edit_size').value         = btn.dataset.size;
+        document.getElementById('edit_weight').value       = btn.dataset.weight;
+        document.getElementById('edit_quantity').value     = btn.dataset.quantity;
+        document.getElementById('edit_min_quantity').value = btn.dataset.min;
+    });
+});
+
+// Eliminar variante
+document.querySelectorAll('.delete-variant-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const form = document.getElementById('deleteVariantForm');
+        form.action = `/admin/variants/${btn.dataset.id}`;
+        document.getElementById('delete_variant_label').textContent = btn.dataset.sku;
+    });
+});
+</script>
 @endsection

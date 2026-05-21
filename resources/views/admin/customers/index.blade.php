@@ -1,0 +1,81 @@
+@extends('layouts.app')
+
+@section('title', 'Clientes')
+
+@section('content')
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">Clientes</h1>
+    <x-new-button :route="route('admin.customers.create')" label="Nuevo cliente" />
+</div>
+
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@endif
+
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th style="width:60px">#</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>DNI</th>
+                    <th>Teléfono</th>
+                    <th style="width:90px">Pedidos</th>
+                    <th style="width:160px"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($customers as $customer)
+                <tr>
+                    <td class="text-muted">{{ $customer->id }}</td>
+                    <td>
+                        <a href="{{ route('admin.customers.show', $customer) }}" class="text-decoration-none">
+                            {{ $customer->user->name }}
+                        </a>
+                    </td>
+                    <td>{{ $customer->user->email }}</td>
+                    <td>{{ $customer->dni ?? '—' }}</td>
+                    <td>{{ $customer->phone ?? '—' }}</td>
+                    <td class="text-center">
+                        @if($customer->orders_count > 0)
+                            <span class="badge bg-info text-dark">{{ $customer->orders_count }}</span>
+                        @else
+                            <span class="text-muted">0</span>
+                        @endif
+                    </td>
+                    <td class="text-end">
+                        <x-row-actions
+                            :show-route="route('admin.customers.show', $customer)"
+                            :edit-route="route('admin.customers.edit', $customer)"
+                            :delete-route="route('admin.customers.destroy', $customer)"
+                            item-name="el cliente {{ $customer->user->name }}" />
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-4">
+                        No hay clientes cargados todavía.
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@if($customers->hasPages())
+    <div class="mt-3">{{ $customers->links() }}</div>
+@endif
+@endsection

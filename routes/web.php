@@ -19,22 +19,6 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware('auth')->name('dashboard');
 
-
-Route::prefix('admin')
-    ->name('admin.')
-    ->middleware('auth')
-    ->group(function () {
-        Route::resource('brands', \App\Http\Controllers\Admin\BrandController::class);
-    });
-
-Route::prefix('admin')
-    ->name('admin.')
-    ->middleware('auth')
-    ->group(function () {
-        Route::resource('brands', \App\Http\Controllers\Admin\BrandController::class);
-        Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
-    });
-
 Route::prefix('admin')
     ->name('admin.')
     ->middleware(['auth'])
@@ -42,15 +26,7 @@ Route::prefix('admin')
         Route::resource('brands', \App\Http\Controllers\Admin\BrandController::class);
         Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
         Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
-    });
-
-Route::prefix('admin')
-    ->name('admin.')
-    ->middleware(['auth'])
-    ->group(function () {
-        Route::resource('brands', \App\Http\Controllers\Admin\BrandController::class);
-        Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
-        Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
-        Route::resource('variants', \App\Http\Controllers\Admin\ProductVariantController::class)
-            ->only(['store', 'update', 'destroy']);
+        Route::resource('variants', \App\Http\Controllers\Admin\ProductVariantController::class)->only(['store', 'update', 'destroy']);
+        Route::resource('customers', \App\Http\Controllers\Admin\CustomerController::class);
+        Route::resource('addresses', \App\Http\Controllers\Admin\AddressController::class)->only(['store', 'update', 'destroy']);
     });
