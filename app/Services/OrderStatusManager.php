@@ -26,8 +26,14 @@ class OrderStatusManager
                 $this->descontarStock($order);
             }
 
-            if ($newStatus === 'cancelado' && $this->stockYaDescontado($oldStatus)) {
-                $this->reponerStock($order);
+            if ($newStatus === 'cancelado') {
+                if ($this->stockYaDescontado($oldStatus)) {
+                    $this->reponerStock($order);
+                }
+                // Marca los pagos no rechazados como rechazados
+                $order->payments()
+                ->where('status', 'pendiente')
+                ->update(['status' => 'rechazado']);
             }
 
             $order->update(['status' => $newStatus]);

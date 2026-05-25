@@ -147,12 +147,12 @@
         <div class="card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <span class="fw-semibold">Envío</span>
-                @if(!$order->shipment)
+                @if(!$order->shipment && in_array($order->status, ['pagado', 'enviado']))
                     <button type="button" class="btn btn-sm btn-success"
                             data-bs-toggle="modal" data-bs-target="#modalShipment">
                         <i class="bi bi-plus-lg me-1"></i> Registrar
                     </button>
-                @else
+                @elseif($order->shipment && $order->status !== 'cancelado')
                     <button type="button" class="btn btn-sm btn-outline-secondary"
                             data-bs-toggle="modal" data-bs-target="#modalEditShipment">
                         <i class="bi bi-pencil"></i>
@@ -219,6 +219,7 @@
                                 </div>
                                 <div class="text-end">
                                     <span class="fw-semibold d-block">${{ number_format($payment->amount, 2) }}</span>
+                                    @if(!in_array($order->status, ['enviado', 'entregado', 'cancelado']))
                                     <div class="d-flex gap-1 mt-1">
                                         <button type="button"
                                                 class="btn btn-sm btn-outline-secondary edit-payment-btn"
@@ -240,6 +241,7 @@
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </div>
+                                    @endif
                                 </div>
                             </div>
                         </li>
