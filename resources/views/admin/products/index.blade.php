@@ -5,7 +5,9 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0">Productos</h1>
-    <x-new-button :route="route('admin.products.create')" label="Nuevo producto" />
+    @can('catalog.manage')
+        <x-new-button :route="route('admin.products.create')" label="Nuevo producto" />
+    @endcan
 </div>
 
 @if(session('success'))
@@ -116,7 +118,9 @@
                             :show-route="route('admin.products.show', $product)"
                             :edit-route="route('admin.products.edit', $product)"
                             :delete-route="route('admin.products.destroy', $product)"
-                            item-name="el producto {{ $product->name }}" />
+                            item-name="el producto {{ $product->name }}" 
+                            :can-edit="auth()->user()->can('catalog.manage')"
+                            :can-delete="auth()->user()->can('catalog.manage')" />
                     </td>
                 </tr>
                 @empty

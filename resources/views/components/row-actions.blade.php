@@ -1,29 +1,27 @@
 <div class="d-flex justify-content-end gap-1">
     @if($showRoute)
-        <a href="{{ $showRoute }}"
-           class="btn btn-sm btn-outline-info"
-           title="Ver">
+        <a href="{{ $showRoute }}" class="btn btn-sm btn-outline-info" title="Ver">
             <i class="bi bi-eye"></i>
         </a>
     @endif
 
-    <a href="{{ $editRoute }}"
-       class="btn btn-sm btn-outline-secondary"
-       title="Editar">
-        <i class="bi bi-pencil"></i>
-    </a>
+    @if($canEdit)
+        <a href="{{ $editRoute }}" class="btn btn-sm btn-outline-secondary" title="Editar">
+            <i class="bi bi-pencil"></i>
+        </a>
+    @endif
 
-    <button type="button"
-            class="btn btn-sm btn-outline-danger"
-            data-bs-toggle="modal"
-            data-bs-target="#{{ $modalId() }}"
-            title="Eliminar">
-        <i class="bi bi-trash"></i>
-    </button>
+    @if($canDelete)
+        <button type="button" class="btn btn-sm btn-outline-danger"
+                data-bs-toggle="modal" data-bs-target="#{{ $modalId() }}" title="Eliminar">
+            <i class="bi bi-trash"></i>
+        </button>
+    @endif
 </div>
 
+@if($canDelete)
 {{-- Modal de confirmación --}}
-<div class="modal fade" id="{{ $modalId() }}" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="{{ $modalId() }}" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -34,18 +32,12 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <p class="mb-0">
-                    ¿Estás seguro que querés eliminar <strong>{{ $itemName }}</strong>?
-                </p>
-                <p class="text-muted small mt-2 mb-0">
-                    Esta acción no se puede deshacer.
-                </p>
+                <p class="mb-0">¿Estás seguro que querés eliminar <strong>{{ $itemName }}</strong>?</p>
+                <p class="text-muted small mt-2 mb-0">Esta acción no se puede deshacer.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                    Cancelar
-                </button>
-                <form action="{{ $deleteRoute }}" method="POST" class="d-inline">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form action="{{ $deleteRoute }}" method="POST">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger">
@@ -56,3 +48,4 @@
         </div>
     </div>
 </div>
+@endif

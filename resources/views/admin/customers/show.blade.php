@@ -5,9 +5,16 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0">{{ $customer->user->name }}</h1>
-    <x-show-actions
-        :edit-route="route('admin.customers.edit', $customer)"
-        :back-route="route('admin.customers.index')" />
+    @can('users.manage')
+        <x-show-actions
+            :edit-route="route('admin.customers.edit', $customer)"
+            :back-route="route('admin.customers.index')" />
+    @else
+        {{-- Solo el botón volver si no puede editar --}}
+        <a href="{{ route('admin.customers.index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Volver
+        </a>
+    @endcan
 </div>
 
 <div class="row g-4">

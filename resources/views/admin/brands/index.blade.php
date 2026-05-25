@@ -6,7 +6,9 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0">Marcas</h1>
-    <x-new-button :route="route('admin.brands.create')" label="Nueva marca" />
+    @can('catalog.manage')
+        <x-new-button :route="route('admin.brands.create')" label="Nueva marca" />
+    @endcan
 </div>
 
 @if(session('success'))
@@ -83,7 +85,9 @@
                             :show-route="route('admin.brands.show', $brand)"
                             :edit-route="route('admin.brands.edit', $brand)"
                             :delete-route="route('admin.brands.destroy', $brand)"
-                            item-name="la marca {{ $brand->name }}" />
+                            item-name="la marca {{ $brand->name }}"
+                            :can-edit="auth()->user()->can('catalog.manage')"
+                            :can-delete="auth()->user()->can('catalog.manage')" />
                     </td>
                 </tr>
                 @empty

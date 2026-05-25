@@ -119,10 +119,12 @@
                     El estado avanza automáticamente al aprobar el pago y al actualizar el envío.
                 </p>
                 @if(!in_array($order->status, ['cancelado', 'entregado']))
+                    @can('orders.manage')
                     <button type="button" class="btn btn-outline-danger btn-sm w-100"
                             data-bs-toggle="modal" data-bs-target="#modalCancelOrder">
                         <i class="bi bi-x-circle me-1"></i> Cancelar pedido
                     </button>
+                    @endcan
                 @endif
             </div>
         </div>
@@ -148,15 +150,19 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <span class="fw-semibold">Envío</span>
                 @if(!$order->shipment && in_array($order->status, ['pagado', 'enviado']))
+                    @can('shipments.manage')
                     <button type="button" class="btn btn-sm btn-success"
                             data-bs-toggle="modal" data-bs-target="#modalShipment">
                         <i class="bi bi-plus-lg me-1"></i> Registrar
                     </button>
+                    @endcan
                 @elseif($order->shipment && $order->status !== 'cancelado')
+                    @can('shipments.manage')
                     <button type="button" class="btn btn-sm btn-outline-secondary"
                             data-bs-toggle="modal" data-bs-target="#modalEditShipment">
                         <i class="bi bi-pencil"></i>
                     </button>
+                    @endcan
                 @endif
             </div>
             <div class="card-body">
@@ -194,10 +200,12 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <span class="fw-semibold">Pagos</span>
                 @if($order->payments->isEmpty() && !in_array($order->status, ['enviado', 'entregado', 'cancelado']))
+                    @can('payments.manage')
                     <button type="button" class="btn btn-sm btn-success"
                             data-bs-toggle="modal" data-bs-target="#modalPayment">
                         <i class="bi bi-plus-lg me-1"></i> Registrar
                     </button>
+                    @endcan
                 @endif
             </div>
             <div class="card-body p-0">

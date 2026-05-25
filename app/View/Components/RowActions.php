@@ -13,6 +13,8 @@ class RowActions extends Component
         public string $deleteRoute,
         public string $itemName = 'este registro',
         public ?string $showRoute = null,
+        public bool $canEdit = true,
+        public bool $canDelete = true,
     ) {}
 
     public function render()

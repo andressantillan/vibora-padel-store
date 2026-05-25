@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
             BrandSeeder::class,
             CustomerSeeder::class,
             OrderTestSeeder::class,
+            RolesAndPermissionsSeeder::class,
+            LocalUsersSeeder::class,
         ]);
     }
 }

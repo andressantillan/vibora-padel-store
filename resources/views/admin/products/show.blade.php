@@ -18,9 +18,16 @@
 @endif
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0">{{ $product->name }}</h1>
-    <x-show-actions
-        :edit-route="route('admin.products.edit', $product)"
-        :back-route="route('admin.products.index')" />
+    @can('catalog.manage')
+        <x-show-actions
+            :edit-route="route('admin.products.edit', $product)"
+            :back-route="route('admin.products.index')" />
+    @else
+        {{-- Solo el botón volver si no puede editar --}}
+        <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Volver
+        </a>
+    @endcan
 </div>
 
 <div class="row g-4">
@@ -107,9 +114,11 @@
                     Variantes
                     <span class="badge bg-secondary ms-1">{{ $product->variants->count() }}</span>
                 </span>
+                @can('catalog.manage')
                 <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modalVariant">
                     <i class="bi bi-plus-lg me-1"></i> Agregar variante
                 </button>
+                @endcan
             </div>
             <div class="card-body p-0">
                 @if($product->variants->isNotEmpty())
@@ -143,7 +152,9 @@
                                     @endif
                                 </td>
                                 <td class="d-flex justify-content-end gap-1">
+                                    @can('catalog.manage')
                                     <x-variant-actions :variant="$variant" />
+                                    @endcan
                                 </td>
                             </tr>
                             @endforeach
