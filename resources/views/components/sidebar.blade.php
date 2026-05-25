@@ -141,9 +141,24 @@
                 </ul>
             </div>
         </li>
+
+        {{-- Pedidos --}}
+        <li class="nav-item">
+            <a href="{{ route('admin.orders.index') }}"
+            class="nav-link text-white sidebar-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
+                <i class="bi bi-cart-check me-2"></i> Pedidos
+            </a>
+        </li>
+
+        {{-- Envíos --}}
+        <li class="nav-item">
+            <a href="{{ route('admin.shipments.index') }}"
+            class="nav-link text-white sidebar-link {{ request()->routeIs('admin.shipments.*') ? 'active' : '' }}">
+                <i class="bi bi-truck me-2"></i> Envíos
+            </a>
+        </li>
         
     </ul>
-
 
     <hr class="border-secondary">
 

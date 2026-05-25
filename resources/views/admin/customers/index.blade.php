@@ -22,6 +22,14 @@
     </div>
 @endif
 
+<x-filter-bar :action="route('admin.customers.index')">
+    <div class="col-md-5">
+        <label class="form-label small fw-semibold mb-1">Buscar</label>
+        <input type="text" name="search" value="{{ request('search') }}"
+               class="form-control" placeholder="Nombre, email o DNI">
+    </div>
+</x-filter-bar>
+
 <div class="card">
     <div class="card-body p-0">
         <table class="table table-hover align-middle mb-0">
@@ -75,7 +83,5 @@
     </div>
 </div>
 
-@if($customers->hasPages())
-    <div class="mt-3">{{ $customers->links() }}</div>
-@endif
+<x-pagination :paginator="$customers" />
 @endsection

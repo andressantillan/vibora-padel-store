@@ -1,0 +1,17 @@
+.scrollable-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* Scrollbar más sutil (opcional, webkit) */
+.scrollable-list::-webkit-scrollbar {
+    width: 8px;
+}
+.scrollable-list::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+.scrollable-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+

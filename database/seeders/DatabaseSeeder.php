@@ -21,6 +21,8 @@ class DatabaseSeeder extends Seeder
             AdminUserSeeder::class,
             CategorySeeder::class,
             BrandSeeder::class,
+            CustomerSeeder::class,
+            OrderTestSeeder::class,
         ]);
     }
 }

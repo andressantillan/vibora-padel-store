@@ -7,13 +7,24 @@ use App\Http\Requests\StoreBrandRequest;
 use App\Http\Requests\UpdateBrandRequest;
 use App\Models\Brand;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class BrandController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $brands = Brand::orderBy('name')->paginate(20);
+        $query = Brand::query();
+
+        if ($request->filled('search')) {
+            $query->where('name', 'ilike', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('active')) {
+            $query->where('active', $request->active === '1');
+        }
+
+        $brands = $query->orderBy('name')->paginate(20)->withQueryString();
 
         return view('admin.brands.index', compact('brands'));
     }

@@ -20,7 +20,7 @@ class StoreCustomerRequest extends FormRequest
             'password' => ['required', 'string', 'min:8', 'confirmed'],
 
             // Datos de Customer
-            'dni'        => ['nullable', 'string', 'max:20', 'unique:customers,dni'],
+            'dni' => ['nullable', 'integer', 'digits_between:7,8', 'unique:customers,dni'],
             'phone'      => ['nullable', 'string', 'max:20'],
             'birth_date' => ['nullable', 'date', 'before:today'],
         ];
@@ -36,6 +36,7 @@ class StoreCustomerRequest extends FormRequest
             'password.min'      => 'La contraseña debe tener al menos 8 caracteres.',
             'password.confirmed' => 'Las contraseñas no coinciden.',
             'dni.unique'        => 'Ya existe un cliente con ese DNI.',
+            'dni.digits_between' => 'El DNI debe tener entre 7 y 8 dígitos.',
             'birth_date.before' => 'La fecha de nacimiento debe ser anterior a hoy.',
         ];
     }

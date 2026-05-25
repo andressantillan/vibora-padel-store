@@ -21,6 +21,22 @@
     </div>
 @endif
 
+<x-filter-bar :action="route('admin.categories.index')">
+    <div class="col-md-4">
+        <label class="form-label small fw-semibold mb-1">Buscar</label>
+        <input type="text" name="search" value="{{ request('search') }}"
+               class="form-control" placeholder="Nombre de la categoría">
+    </div>
+    <div class="col-md-3">
+        <label class="form-label small fw-semibold mb-1">Estado</label>
+        <select name="active" class="form-select">
+            <option value="">Todos</option>
+            <option value="1" {{ request('active') === '1' ? 'selected' : '' }}>Activa</option>
+            <option value="0" {{ request('active') === '0' ? 'selected' : '' }}>Inactiva</option>
+        </select>
+    </div>
+</x-filter-bar>
+
 <div class="card">
     <div class="card-body p-0">
         <table class="table table-hover align-middle mb-0">

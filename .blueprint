@@ -1,13 +1,10 @@
 created:
-    - database/factories/OrderFactory.php
-    - database/factories/OrderItemFactory.php
-    - database/factories/OrderStatusHistoryFactory.php
-    - database/migrations/2026_05_21_195011_create_orders_table.php
-    - database/migrations/2026_05_21_195012_create_order_items_table.php
-    - database/migrations/2026_05_21_195013_create_order_status_histories_table.php
-    - app/Models/Order.php
-    - app/Models/OrderItem.php
-    - app/Models/OrderStatusHistory.php
+    - database/factories/ShipmentFactory.php
+    - database/factories/PaymentFactory.php
+    - database/migrations/2026_05_24_182540_create_shipments_table.php
+    - database/migrations/2026_05_24_182541_create_payments_table.php
+    - app/Models/Shipment.php
+    - app/Models/Payment.php
 models:
     Brand: { name: 'string:100', slug: 'string:100 unique', logo: 'string nullable', active: 'boolean default:true', timestamps: timestamps }
     Category: { parent_id: 'id foreign:categories nullable', name: 'string:100', slug: 'string:100 unique', description: 'text nullable', active: 'boolean default:true', timestamps: timestamps }

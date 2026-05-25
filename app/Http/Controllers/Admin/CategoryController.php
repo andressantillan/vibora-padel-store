@@ -5,13 +5,24 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
+use Illuminate\Http\Request;
 use App\Models\Category;
 
 class CategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::orderBy('name')->paginate(20);
+        $query = Category::query();
+
+        if ($request->filled('search')) {
+            $query->where('name', 'ilike', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('active')) {
+            $query->where('active', $request->active === '1');
+        }
+
+        $categories = $query->orderBy('name')->paginate(20)->withQueryString();
 
         return view('admin.categories.index', compact('categories'));
     }

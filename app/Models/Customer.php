@@ -33,6 +33,7 @@ class Customer extends Model
             'id' => 'integer',
             'user_id' => 'integer',
             'birth_date' => 'date',
+            'dni' => 'integer',
         ];
     }
 

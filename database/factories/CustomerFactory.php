@@ -14,7 +14,7 @@ class CustomerFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'dni' => fake()->regexify('[A-Za-z0-9]{20}'),
+            'dni' => fake()->numberBetween(10000000, 45000000),
             'phone' => fake()->phoneNumber(),
             'birth_date' => fake()->date(),
         ];

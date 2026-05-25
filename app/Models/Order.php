@@ -42,6 +42,22 @@ class Order extends Model
         ];
     }
 
+    const STATUSES = [
+        'pendiente'  => 'Pendiente',
+        'pagado'     => 'Pagado',
+        'enviado'    => 'Enviado',
+        'entregado'  => 'Entregado',
+        'cancelado'  => 'Cancelado',
+    ];
+
+    const STATUS_COLORS = [
+        'pendiente'  => 'warning',
+        'pagado'     => 'info',
+        'enviado'    => 'primary',
+        'entregado'  => 'success',
+        'cancelado'  => 'danger',
+    ];
+
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
@@ -51,4 +67,35 @@ class Order extends Model
     {
         return $this->belongsTo(Address::class);
     }
+
+    public function items()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+    public function statusHistory()
+    {
+        return $this->hasMany(OrderStatusHistory::class);
+    }
+
+    public function shipment()
+    {
+        return $this->hasOne(Shipment::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    public function statusLabel(): string
+    {
+        return self::STATUSES[$this->status] ?? $this->status;
+    }
+
+    public function statusColor(): string
+    {
+        return self::STATUS_COLORS[$this->status] ?? 'secondary';
+    }
+
 }

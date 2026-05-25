@@ -54,7 +54,7 @@
                     <i class="bi bi-plus-lg me-1"></i> Agregar
                 </button>
             </div>
-            <div class="card-body p-0">
+            <div class="card-body p-0 scrollable-list">
                 @if($customer->addresses->isNotEmpty())
                     <ul class="list-group list-group-flush">
                         @foreach($customer->addresses as $address)
@@ -88,10 +88,10 @@
                 Pedidos
                 <span class="badge bg-secondary ms-1">{{ $customer->orders->count() }}</span>
             </div>
-            <div class="card-body p-0">
+            <div class="card-body p-0 scrollable-list">
                 @if($customer->orders->isNotEmpty())
                     <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light">
+                        <thead class="table-light" style="position: sticky; top: 0; z-index: 1;">
                             <tr>
                                 <th>#</th>
                                 <th>Estado</th>

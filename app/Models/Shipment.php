@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class OrderItem extends Model
+class Shipment extends Model
 {
     use HasFactory;
 
@@ -17,9 +17,10 @@ class OrderItem extends Model
      */
     protected $fillable = [
         'order_id',
-        'product_variant_id',
-        'quantity',
-        'unit_price',
+        'carrier',
+        'tracking_number',
+        'status',
+        'shipped_at',
     ];
 
     /**
@@ -32,8 +33,7 @@ class OrderItem extends Model
         return [
             'id' => 'integer',
             'order_id' => 'integer',
-            'product_variant_id' => 'integer',
-            'unit_price' => 'decimal:2',
+            'shipped_at' => 'datetime',
         ];
     }
 
@@ -42,14 +42,26 @@ class OrderItem extends Model
         return $this->belongsTo(Order::class);
     }
 
-    public function variant(): BelongsTo
+    const STATUSES = [
+        'pendiente'   => 'Pendiente',
+        'en_transito' => 'En tránsito',
+        'entregado'   => 'Entregado',
+    ];
+
+    const STATUS_COLORS = [
+        'pendiente'   => 'warning',
+        'en_transito' => 'primary',
+        'entregado'   => 'success',
+    ];
+
+    public function statusLabel(): string
     {
-        return $this->belongsTo(ProductVariant::class, 'product_variant_id');
+        return self::STATUSES[$this->status] ?? $this->status;
     }
 
-    public function subtotal(): float
+    public function statusColor(): string
     {
-        return $this->quantity * $this->unit_price;
+        return self::STATUS_COLORS[$this->status] ?? 'secondary';
     }
-
 }
+

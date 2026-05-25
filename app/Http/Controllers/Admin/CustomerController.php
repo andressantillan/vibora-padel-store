@@ -9,15 +9,23 @@ use App\Models\Customer;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $customers = Customer::with('user')
-            ->withCount('orders')
-            ->orderBy('id', 'desc')
-            ->paginate(20);
+        $query = Customer::with('user')->withCount('orders');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->whereHas('user', function ($q) use ($search) {
+                $q->where('name', 'ilike', "%{$search}%")
+                ->orWhere('email', 'ilike', "%{$search}%");
+            })->orWhere('dni', 'ilike', "%{$search}%");
+        }
+
+        $customers = $query->orderBy('id', 'desc')->paginate(20)->withQueryString();
 
         return view('admin.customers.index', compact('customers'));
     }

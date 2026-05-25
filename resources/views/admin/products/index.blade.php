@@ -22,6 +22,53 @@
     </div>
 @endif
 
+<x-filter-bar :action="route('admin.products.index')">
+    {{-- Búsqueda --}}
+    <div class="col-md-3">
+        <label class="form-label small fw-semibold mb-1">Buscar</label>
+        <input type="text" name="search" value="{{ request('search') }}"
+               class="form-control" placeholder="Nombre del producto">
+    </div>
+
+    {{-- Categoría --}}
+    <div class="col-md-2">
+        <label class="form-label small fw-semibold mb-1">Categoría</label>
+        <select name="category_id" class="form-select">
+            <option value="">Todas</option>
+            @foreach($categories as $category)
+                <option value="{{ $category->id }}"
+                    {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                    {{ $category->name }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+
+    {{-- Marca --}}
+    <div class="col-md-2">
+        <label class="form-label small fw-semibold mb-1">Marca</label>
+        <select name="brand_id" class="form-select">
+            <option value="">Todas</option>
+            @foreach($brands as $brand)
+                <option value="{{ $brand->id }}"
+                    {{ request('brand_id') == $brand->id ? 'selected' : '' }}>
+                    {{ $brand->name }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+
+    {{-- Estado --}}
+    <div class="col-md-2">
+        <label class="form-label small fw-semibold mb-1">Estado</label>
+        <select name="active" class="form-select">
+            <option value="">Todos</option>
+            <option value="1" {{ request('active') === '1' ? 'selected' : '' }}>Activo</option>
+            <option value="0" {{ request('active') === '0' ? 'selected' : '' }}>Inactivo</option>
+        </select>
+    </div>
+</x-filter-bar>
+
 <div class="card">
     <div class="card-body p-0">
         <table class="table table-hover align-middle mb-0">

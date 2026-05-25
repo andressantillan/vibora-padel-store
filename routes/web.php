@@ -29,4 +29,8 @@ Route::prefix('admin')
         Route::resource('variants', \App\Http\Controllers\Admin\ProductVariantController::class)->only(['store', 'update', 'destroy']);
         Route::resource('customers', \App\Http\Controllers\Admin\CustomerController::class);
         Route::resource('addresses', \App\Http\Controllers\Admin\AddressController::class)->only(['store', 'update', 'destroy']);
+        Route::resource('payments', \App\Http\Controllers\Admin\PaymentController::class)->only(['store', 'update', 'destroy']);
+        Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class)->only(['index', 'show']);
+        Route::resource('shipments', \App\Http\Controllers\Admin\ShipmentController::class)->only(['index', 'store', 'update', 'destroy']);
+        Route::patch('orders/{order}/cancel', [\App\Http\Controllers\Admin\OrderController::class, 'cancel'])->name('orders.cancel');
     });

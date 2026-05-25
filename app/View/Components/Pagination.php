@@ -5,15 +5,16 @@ namespace App\View\Components;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-class delete_modal.blade extends Component
+class Pagination extends Component
 {
     /**
      * Create a new component instance.
      */
-    public function __construct()
+    public function __construct(public LengthAwarePaginator $paginator)
     {
-        //
+        
     }
 
     /**
@@ -21,6 +22,6 @@ class delete_modal.blade extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.delete_modal.blade.php');
+        return view('components.pagination');
     }
 }
