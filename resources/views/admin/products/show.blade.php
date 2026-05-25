@@ -298,4 +298,17 @@ document.querySelectorAll('.delete-variant-btn').forEach(btn => {
     });
 });
 </script>
+@if($errors->any())
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        @if(old('product_id'))
+            // El error vino del form de CREACIÓN
+            new bootstrap.Modal(document.getElementById('modalVariant')).show();
+        @else
+            // El error vino del form de EDICIÓN
+            new bootstrap.Modal(document.getElementById('modalEditVariant')).show();
+        @endif
+    });
+</script>
+@endif
 @endsection

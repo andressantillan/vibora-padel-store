@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             BrandSeeder::class,
             CustomerSeeder::class,
-            OrderTestSeeder::class,
+            //OrderTestSeeder::class,
             RolesAndPermissionsSeeder::class,
             LocalUsersSeeder::class,
         ]);

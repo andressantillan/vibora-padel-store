@@ -10,6 +10,14 @@ class LocalUsersSeeder extends Seeder
 {
     public function run(): void
     {
+        
+        // ADMIN
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@admin.com'],
+            ['name' => 'Administrador', 'password' => Hash::make('admin123@')]
+        );
+        $admin->syncRoles(['admin']);
+
         // ----- VENDEDOR -----
         $vendedor = User::firstOrCreate(
             ['email' => 'vendedor@vibora.com'],
@@ -31,6 +39,7 @@ class LocalUsersSeeder extends Seeder
         $deposito->syncRoles(['deposito']);
 
         $this->command->info('Usuarios del local creados:');
+        $this->command->info('  admin@vibora.com / admin123@ (rol: admin)');
         $this->command->info('  vendedor@vibora.com / vendedor123@ (rol: vendedor)');
         $this->command->info('  deposito@vibora.com / deposito123@ (rol: deposito)');
     }
