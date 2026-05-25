@@ -1,13 +1,3 @@
-@if($errors->any())
-    <div class="alert alert-danger">
-        <ul class="mb-0 ps-3">
-            @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-
 {{-- Precio --}}
 <div class="mb-3">
     <label class="form-label fw-semibold">Precio <span class="text-danger">*</span></label>
@@ -19,10 +9,10 @@
                class="form-control @error('price') is-invalid @enderror"
                step="0.01" min="0"
                placeholder="0.00">
+        @error('price')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
     </div>
-    @error('price')
-        <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
 </div>
 
 <div class="row g-2">

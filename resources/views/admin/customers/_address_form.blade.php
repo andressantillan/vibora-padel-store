@@ -1,54 +1,52 @@
-{{-- Calle --}}
+@if($errors->any())
+    <div class="alert alert-danger">
+        <ul class="mb-0 ps-3">
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+{{-- Transporte --}}
 <div class="mb-3">
-    <label class="form-label fw-semibold">Calle y número <span class="text-danger">*</span></label>
-    <input type="text" name="street"
-           value="{{ old('street') }}"
-           class="form-control @error('street') is-invalid @enderror"
-           placeholder="Ej: Av. Fontana 250">
-    @error('street')<div class="invalid-feedback">{{ $message }}</div>@enderror
+    <label class="form-label fw-semibold">Empresa de transporte <span class="text-danger">*</span></label>
+    <input type="text" name="carrier"
+           value="{{ old('carrier', $shipment->carrier ?? '') }}"
+           class="form-control @error('carrier') is-invalid @enderror"
+           placeholder="Ej: OCA, Andreani, Correo Argentino">
+    @error('carrier')<div class="invalid-feedback">{{ $message }}</div>@enderror
 </div>
 
-<div class="row g-2">
-    {{-- Ciudad --}}
-    <div class="col-md-6 mb-3">
-        <label class="form-label fw-semibold">Ciudad <span class="text-danger">*</span></label>
-        <input type="text" name="city"
-               value="{{ old('city') }}"
-               class="form-control @error('city') is-invalid @enderror"
-               placeholder="Ej: Trelew">
-        @error('city')<div class="invalid-feedback">{{ $message }}</div>@enderror
-    </div>
-
-    {{-- Provincia --}}
-    <div class="col-md-6 mb-3">
-        <label class="form-label fw-semibold">Provincia <span class="text-danger">*</span></label>
-        <input type="text" name="province"
-               value="{{ old('province') }}"
-               class="form-control @error('province') is-invalid @enderror"
-               placeholder="Ej: Chubut">
-        @error('province')<div class="invalid-feedback">{{ $message }}</div>@enderror
-    </div>
+{{-- Tracking --}}
+<div class="mb-3">
+    <label class="form-label fw-semibold">Número de seguimiento</label>
+    <input type="text" name="tracking_number"
+           value="{{ old('tracking_number', $shipment->tracking_number ?? '') }}"
+           class="form-control @error('tracking_number') is-invalid @enderror"
+           placeholder="Ej: AR123456789">
+    @error('tracking_number')<div class="invalid-feedback">{{ $message }}</div>@enderror
 </div>
 
-{{-- Código postal --}}
+{{-- Estado --}}
 <div class="mb-3">
-    <label class="form-label fw-semibold">Código postal <span class="text-danger">*</span></label>
-    <input type="text" name="postal_code"
-           value="{{ old('postal_code') }}"
-           class="form-control @error('postal_code') is-invalid @enderror"
-           placeholder="Ej: 9100">
-    @error('postal_code')<div class="invalid-feedback">{{ $message }}</div>@enderror
+    <label class="form-label fw-semibold">Estado <span class="text-danger">*</span></label>
+    <select name="status" class="form-select @error('status') is-invalid @enderror">
+        @foreach(\App\Models\Shipment::STATUSES as $value => $label)
+            <option value="{{ $value }}"
+                {{ old('status', $shipment->status ?? 'pendiente') == $value ? 'selected' : '' }}>
+                {{ $label }}
+            </option>
+        @endforeach
+    </select>
+    @error('status')<div class="invalid-feedback">{{ $message }}</div>@enderror
 </div>
 
-{{-- Predeterminada --}}
+{{-- Fecha de envío --}}
 <div class="mb-3">
-    <div class="form-check form-switch">
-        <input type="hidden" name="is_default" value="0">
-        <input type="checkbox" name="is_default" value="1"
-               class="form-check-input" id="is_default_{{ $address->id ?? 'new' }}"
-               {{ old('is_default') ? 'checked' : '' }}>
-        <label for="is_default_{{ $address->id ?? 'new' }}" class="form-check-label">
-            Marcar como predeterminada
-        </label>
-    </div>
+    <label class="form-label fw-semibold">Fecha de envío</label>
+    <input type="date" name="shipped_at"
+           value="{{ old('shipped_at', isset($shipment) && $shipment->shipped_at ? $shipment->shipped_at->format('Y-m-d') : '') }}"
+           class="form-control @error('shipped_at') is-invalid @enderror">
+    @error('shipped_at')<div class="invalid-feedback">{{ $message }}</div>@enderror
 </div>

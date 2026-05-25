@@ -30,6 +30,10 @@ class StoreProductVariantRequest extends FormRequest
             'price.required'    => 'El precio es obligatorio.',
             'price.min'         => 'El precio no puede ser negativo.',
             'quantity.required' => 'La cantidad es obligatoria.',
+            'quantity.min'      => 'La cantidad no puede ser negativa.',
+            'min_quantity.required' => 'La cantidad mínima es obligatoria.',
+            'min_quantity.min'      => 'La cantidad mínima no puede ser negativa.',
+            'weight.min'            => 'El peso no puede ser negativo.',
         ];
     }
 }

@@ -28,7 +28,7 @@ class StorePaymentRequest extends FormRequest
         return [
             'method.required' => 'El método de pago es obligatorio.',
             'amount.required' => 'El monto es obligatorio.',
-            'amount.min'      => 'El monto no puede ser negativo.',
+            'amount.min'      => 'El monto no puede ser negativo.'
         ];
     }
 }

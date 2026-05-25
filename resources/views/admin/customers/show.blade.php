@@ -246,5 +246,14 @@ document.querySelectorAll('.delete-address-btn').forEach(btn => {
     });
 });
 </script>
-
+@if($errors->any())
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        @if(old('customer_id'))
+            // Error del form de CREACIÓN de dirección
+            new bootstrap.Modal(document.getElementById('modalAddress')).show();
+        @endif
+    });
+</script>
+@endif
 @endsection

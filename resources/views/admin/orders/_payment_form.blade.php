@@ -1,3 +1,13 @@
+@if($errors->any())
+    <div class="alert alert-danger">
+        <ul class="mb-0 ps-3">
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 {{-- Método --}}
 <div class="mb-3">
     <label class="form-label fw-semibold">Método <span class="text-danger">*</span></label>
@@ -12,14 +22,14 @@
 {{-- Monto --}}
 <div class="mb-3">
     <label class="form-label fw-semibold">Monto <span class="text-danger">*</span></label>
-    <div class="input-group">
+    <div class="input-group has-validation">
         <span class="input-group-text">$</span>
         <input type="number" name="amount"
                value="{{ old('amount', $orderTotal ?? '') }}"
                class="form-control @error('amount') is-invalid @enderror"
                step="0.01" min="0">
+        @error('amount')<div class="invalid-feedback">{{ $message }}</div>@enderror
     </div>
-    @error('amount')<div class="invalid-feedback">{{ $message }}</div>@enderror
 </div>
 
 {{-- Estado --}}
@@ -42,5 +52,7 @@
 {{-- Fecha de pago --}}
 <div class="mb-3">
     <label class="form-label fw-semibold">Fecha de pago</label>
-    <input type="date" name="paid_at" value="{{ old('paid_at', isset($payment) && $payment->paid_at ? $payment->paid_at->format('Y-m-d') : '') }}" class="form-control">
+    <input type="date" name="paid_at"
+           value="{{ old('paid_at', isset($payment) && $payment->paid_at ? $payment->paid_at->format('Y-m-d') : '') }}"
+           class="form-control">
 </div>

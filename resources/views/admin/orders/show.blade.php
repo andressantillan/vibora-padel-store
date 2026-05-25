@@ -476,4 +476,21 @@ document.querySelectorAll('.delete-payment-btn').forEach(btn => {
     });
 });
 </script>
+@if($errors->any())
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        @if(old('carrier') !== null)
+            // Error vino de un form de ENVÍO (crear o editar)
+            @if($order->shipment)
+                new bootstrap.Modal(document.getElementById('modalEditShipment')).show();
+            @else
+                new bootstrap.Modal(document.getElementById('modalShipment')).show();
+            @endif
+        @elseif(old('order_id'))
+            // Error vino del form de PAGO
+            new bootstrap.Modal(document.getElementById('modalPayment')).show();
+        @endif
+    });
+</script>
+@endif
 @endsection
