@@ -5,9 +5,9 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0">Categorías</h1>
-    <a href="{{ route('admin.categories.create') }}" class="btn btn-primary">
-        + Nueva categoría
-    </a>
+    @can('catalog.manage')
+        <x-new-button :route="route('admin.categories.create')" label="Nueva categoría" />
+    @endcan
 </div>
 
 @if(session('success'))
@@ -22,6 +22,22 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 @endif
+
+<x-filter-bar :action="route('admin.categories.index')">
+    <div class="col-md-4">
+        <label class="form-label small fw-semibold mb-1">Buscar</label>
+        <input type="text" name="search" value="{{ request('search') }}"
+               class="form-control" placeholder="Nombre de la categoría">
+    </div>
+    <div class="col-md-3">
+        <label class="form-label small fw-semibold mb-1">Estado</label>
+        <select name="active" class="form-select">
+            <option value="">Todos</option>
+            <option value="1" {{ request('active') === '1' ? 'selected' : '' }}>Activa</option>
+            <option value="0" {{ request('active') === '0' ? 'selected' : '' }}>Inactiva</option>
+        </select>
+    </div>
+</x-filter-bar>
 
 <div class="card">
     <div class="card-body p-0">
@@ -52,16 +68,14 @@
                             <span class="badge bg-secondary">Inactiva</span>
                         @endif
                     </td>
-                    <td class="text-end">
-                        <a href="{{ route('admin.categories.edit', $category) }}"
-                        class="btn btn-sm btn-outline-secondary">Editar</a>
-                        <form action="{{ route('admin.categories.destroy', $category) }}"
-                            method="POST" class="d-inline"
-                            onsubmit="return confirm('¿Eliminar esta categoría?')">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-sm btn-outline-danger">Eliminar</button>
-                        </form>
+                    <td class="d-flex justify-content-end gap-2">
+                        <x-row-actions
+                            :show-route="route('admin.categories.show', $category)"
+                            :edit-route="route('admin.categories.edit', $category)"
+                            :delete-route="route('admin.categories.destroy', $category)"
+                            item-name="la categoría {{ $category->name }}" 
+                            :can-edit="auth()->user()->can('catalog.manage')"
+                            :can-delete="auth()->user()->can('catalog.manage')" />
                     </td>
                 </tr>
                 @empty

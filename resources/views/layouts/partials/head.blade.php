@@ -11,3 +11,5 @@
 <!-- Bootstrap -->
 <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
 
+<!-- Custom CSS -->
+<link rel="stylesheet" href="{{ asset('css/app.css') }}">

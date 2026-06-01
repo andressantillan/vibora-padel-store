@@ -5,9 +5,9 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0">Productos</h1>
-    <a href="{{ route('admin.products.create') }}" class="btn btn-primary">
-        + Nuevo producto
-    </a>
+    @can('catalog.manage')
+        <x-new-button :route="route('admin.products.create')" label="Nuevo producto" />
+    @endcan
 </div>
 
 @if(session('success'))
@@ -23,6 +23,53 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 @endif
+
+<x-filter-bar :action="route('admin.products.index')">
+    {{-- Búsqueda --}}
+    <div class="col-md-3">
+        <label class="form-label small fw-semibold mb-1">Buscar</label>
+        <input type="text" name="search" value="{{ request('search') }}"
+               class="form-control" placeholder="Nombre del producto">
+    </div>
+
+    {{-- Categoría --}}
+    <div class="col-md-2">
+        <label class="form-label small fw-semibold mb-1">Categoría</label>
+        <select name="category_id" class="form-select">
+            <option value="">Todas</option>
+            @foreach($categories as $category)
+                <option value="{{ $category->id }}"
+                    {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                    {{ $category->name }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+
+    {{-- Marca --}}
+    <div class="col-md-2">
+        <label class="form-label small fw-semibold mb-1">Marca</label>
+        <select name="brand_id" class="form-select">
+            <option value="">Todas</option>
+            @foreach($brands as $brand)
+                <option value="{{ $brand->id }}"
+                    {{ request('brand_id') == $brand->id ? 'selected' : '' }}>
+                    {{ $brand->name }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+
+    {{-- Estado --}}
+    <div class="col-md-2">
+        <label class="form-label small fw-semibold mb-1">Estado</label>
+        <select name="active" class="form-select">
+            <option value="">Todos</option>
+            <option value="1" {{ request('active') === '1' ? 'selected' : '' }}>Activo</option>
+            <option value="0" {{ request('active') === '0' ? 'selected' : '' }}>Inactivo</option>
+        </select>
+    </div>
+</x-filter-bar>
 
 <div class="card">
     <div class="card-body p-0">
@@ -66,16 +113,14 @@
                             <span class="badge bg-secondary">Inactivo</span>
                         @endif
                     </td>
-                    <td class="text-end">
-                        <a href="{{ route('admin.products.edit', $product) }}"
-                           class="btn btn-sm btn-outline-secondary">Editar</a>
-                        <form action="{{ route('admin.products.destroy', $product) }}"
-                              method="POST" class="d-inline"
-                              onsubmit="return confirm('¿Eliminar este producto?')">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-sm btn-outline-danger">Eliminar</button>
-                        </form>
+                    <td class="d-flex justify-content-end gap-2">
+                        <x-row-actions
+                            :show-route="route('admin.products.show', $product)"
+                            :edit-route="route('admin.products.edit', $product)"
+                            :delete-route="route('admin.products.destroy', $product)"
+                            item-name="el producto {{ $product->name }}" 
+                            :can-edit="auth()->user()->can('catalog.manage')"
+                            :can-delete="auth()->user()->can('catalog.manage')" />
                     </td>
                 </tr>
                 @empty

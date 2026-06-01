@@ -2,6 +2,16 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Admin\BrandController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ProductVariantController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\PaymentController;
+use App\Http\Controllers\Admin\ShipmentController;
+use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\AddressController;
+
 
 Route::get('/', function () {
     return view('home');
@@ -19,38 +29,61 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware('auth')->name('dashboard');
 
+Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
 
-Route::prefix('admin')
-    ->name('admin.')
-    ->middleware('auth')
-    ->group(function () {
-        Route::resource('brands', \App\Http\Controllers\Admin\BrandController::class);
+    // Catálogo: ver para todos los del local, gestionar según permiso
+        Route::middleware('permission:catalog.view')->group(function () {
+        Route::get('brands', [BrandController::class, 'index'])->name('brands.index');
+        Route::get('brands/{brand}', [BrandController::class, 'show'])->name('brands.show')->whereNumber('brand');
+
+        Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
+        Route::get('categories/{category}', [CategoryController::class, 'show'])->name('categories.show')->whereNumber('category');
+
+        Route::get('products', [ProductController::class, 'index'])->name('products.index');
+        Route::get('products/{product}', [ProductController::class, 'show'])->name('products.show')->whereNumber('product');
     });
 
-Route::prefix('admin')
-    ->name('admin.')
-    ->middleware('auth')
-    ->group(function () {
-        Route::resource('brands', \App\Http\Controllers\Admin\BrandController::class);
-        Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
+    Route::middleware('permission:catalog.manage')->group(function () {
+        Route::resource('brands', BrandController::class)->except(['index', 'show']);
+        Route::resource('categories', CategoryController::class)->except(['index', 'show']);
+        Route::resource('products', ProductController::class)->except(['index', 'show']);
+        Route::resource('variants', ProductVariantController::class)->only(['store', 'update', 'destroy']);
     });
 
-Route::prefix('admin')
-    ->name('admin.')
-    ->middleware(['auth'])
-    ->group(function () {
-        Route::resource('brands', \App\Http\Controllers\Admin\BrandController::class);
-        Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
-        Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
+    // Pedidos
+    Route::middleware('permission:orders.view')->group(function () {
+        Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show')->whereNumber('order');
+    });
+    Route::middleware('permission:orders.manage')->group(function () {
+        Route::patch('orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel')->whereNumber('order');
     });
 
-Route::prefix('admin')
-    ->name('admin.')
-    ->middleware(['auth'])
-    ->group(function () {
-        Route::resource('brands', \App\Http\Controllers\Admin\BrandController::class);
-        Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
-        Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
-        Route::resource('variants', \App\Http\Controllers\Admin\ProductVariantController::class)
-            ->only(['store', 'update', 'destroy']);
+    // Pagos
+    Route::middleware('permission:payments.manage')->group(function () {
+        Route::resource('payments', PaymentController::class)->only(['store', 'update', 'destroy']);
     });
+
+    // Envíos
+    Route::middleware('permission:shipments.view')->group(function () {
+        Route::get('shipments', [ShipmentController::class, 'index'])->name('shipments.index');
+    });
+    Route::middleware('permission:shipments.manage')->group(function () {
+        Route::resource('shipments', ShipmentController::class)->only(['store', 'update', 'destroy']);
+    });
+
+    // Clientes
+    Route::middleware('permission:customers.view')->group(function () {
+        Route::get('customers', [CustomerController::class, 'index'])->name('customers.index');
+        Route::get('customers/{customer}', [CustomerController::class, 'show'])->name('customers.show')->whereNumber('customer');
+    });
+    Route::middleware('permission:customers.manage')->group(function () {
+        Route::resource('customers', CustomerController::class)->except(['index', 'show']);
+        Route::resource('addresses', AddressController::class)->only(['store', 'update', 'destroy']);
+    });
+
+    // Usuarios del local (solo admin)
+    Route::middleware('permission:users.manage')->group(function () {
+        Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
+    });
+});

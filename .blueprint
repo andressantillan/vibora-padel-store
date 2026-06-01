@@ -1,7 +1,10 @@
 created:
-    - database/factories/StockFactory.php
-    - database/migrations/2026_05_11_195431_create_stocks_table.php
-    - app/Models/Stock.php
+    - database/factories/ShipmentFactory.php
+    - database/factories/PaymentFactory.php
+    - database/migrations/2026_05_24_182540_create_shipments_table.php
+    - database/migrations/2026_05_24_182541_create_payments_table.php
+    - app/Models/Shipment.php
+    - app/Models/Payment.php
 models:
     Brand: { name: 'string:100', slug: 'string:100 unique', logo: 'string nullable', active: 'boolean default:true', timestamps: timestamps }
     Category: { parent_id: 'id foreign:categories nullable', name: 'string:100', slug: 'string:100 unique', description: 'text nullable', active: 'boolean default:true', timestamps: timestamps }

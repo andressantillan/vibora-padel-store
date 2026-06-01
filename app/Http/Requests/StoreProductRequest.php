@@ -21,7 +21,8 @@ class StoreProductRequest extends FormRequest
             'slug'        => ['required', 'string', 'max:200', 'unique:products,slug'],
             'description' => ['nullable', 'string'],
             'active'      => ['boolean'],
-
+            'shape' => ['nullable', 'in:redonda,lagrima,diamante'],
+            'level' => ['nullable', 'in:iniciacion,intermedio,avanzado'],
             // Imágenes
             'images'          => ['nullable', 'array'],
             'images.*'        => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
@@ -40,6 +41,8 @@ class StoreProductRequest extends FormRequest
             'name.unique'          => 'Ya existe un producto con ese nombre.',
             'images.*.image'       => 'Cada archivo debe ser una imagen.',
             'images.*.max'         => 'Cada imagen no puede superar 2MB.',
+            'shape.in'             => 'La forma seleccionada no es válida.',
+            'level.in'             => 'El nivel seleccionado no es válido.',
         ];
     }
 

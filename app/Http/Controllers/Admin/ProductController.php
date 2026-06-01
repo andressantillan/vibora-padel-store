@@ -11,16 +11,43 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with(['category', 'brand', 'mainImage'])
-            ->orderBy('name')
-            ->paginate(20);
+        $query = Product::with(['category', 'brand', 'mainImage']);
 
-        return view('admin.products.index', compact('products'));
+        // Búsqueda por nombre
+        if ($request->filled('search')) {
+            $query->where('name', 'ilike', '%' . $request->search . '%');
+        }
+
+        // Filtro por categoría
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        // Filtro por marca
+        if ($request->filled('brand_id')) {
+            $query->where('brand_id', $request->brand_id);
+        }
+
+        // Filtro por estado
+        if ($request->filled('active')) {
+            $query->where('active', $request->active === '1');
+        }
+
+        $products = $query->orderBy('name')
+            ->paginate(20)
+            ->withQueryString(); // conserva los filtros en la paginación
+
+        $categories = Category::orderBy('name')->get();
+        $brands     = Brand::orderBy('name')->get();
+
+        return view('admin.products.index', compact('products', 'categories', 'brands'));
+    
     }
 
     public function create()

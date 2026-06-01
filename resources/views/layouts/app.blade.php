@@ -23,5 +23,22 @@
         </div>
         
         <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+        <script>
+            document.addEventListener('click', function (e) {
+                const btn = e.target.closest('.toggle-password');
+                if (!btn) return;
+
+                const input = document.getElementById(btn.dataset.target);
+                const icon  = btn.querySelector('i');
+
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.replace('bi-eye', 'bi-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.replace('bi-eye-slash', 'bi-eye');
+                }
+            });
+        </script>
     </body>
 </html>

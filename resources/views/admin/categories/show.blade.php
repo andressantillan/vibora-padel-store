@@ -5,14 +5,16 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0">{{ $category->name }}</h1>
-    <div class="d-flex gap-2">
-        <a href="{{ route('admin.categories.edit', $category) }}" class="btn btn-outline-secondary">
-            Editar
+    @can('catalog.manage')
+        <x-show-actions
+        :edit-route="route('admin.categories.edit', $category)"
+        :back-route="route('admin.categories.index')" />
+    @else
+        {{-- Solo el botón volver si no puede editar --}}
+        <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Volver
         </a>
-        <a href="{{ route('admin.categories.index') }}" class="btn btn-outline-secondary">
-            ← Volver
-        </a>
-    </div>
+    @endcan
 </div>
 
 <div class="card">

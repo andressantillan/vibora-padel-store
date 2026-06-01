@@ -7,12 +7,20 @@ use App\Http\Requests\StoreProductVariantRequest;
 use App\Http\Requests\UpdateProductVariantRequest;
 use App\Models\Product;
 use App\Models\ProductVariant;
+use App\Services\SkuGenerator;
 
 class ProductVariantController extends Controller
 {
+
+    public function __construct(protected SkuGenerator $skuGenerator){}
+
     public function store(StoreProductVariantRequest $request)
     {
         $data    = $request->validated();
+        $product = Product::find($data['product_id']);
+
+        $data['sku'] = $this->skuGenerator->generate($product, $data); 
+        
         $variant = ProductVariant::create($data);
 
         // Crear stock automáticamente
@@ -29,6 +37,12 @@ class ProductVariantController extends Controller
     public function update(UpdateProductVariantRequest $request, ProductVariant $variant)
     {
         $data = $request->validated();
+
+        if($this->shouldRegenerateSku($variant, $data)) {
+            $data['sku'] = $this->skuGenerator->generate($variant->product, $data);
+        }
+
+
         $variant->update($data);
 
         // Actualizar stock
@@ -62,4 +76,13 @@ class ProductVariantController extends Controller
             ->route('admin.products.show', $productId)
             ->with('success', 'Variante eliminada correctamente.');
     }
+
+    private function shouldRegenerateSku(ProductVariant $variant, array $newData): bool
+    {
+        return $variant->color  != ($newData['color']  ?? null)
+            || $variant->size   != ($newData['size']   ?? null)
+            || $variant->weight != ($newData['weight'] ?? null);
+    }
+
+
 }
