@@ -46,38 +46,25 @@ class ShipmentController extends Controller
     {
         $order = Order::findOrFail($request->order_id);
 
-        if (in_array($order->status, ['cancelado', 'entregado'])) {
-            return redirect()
-                ->route('admin.orders.show', $order->id)
-                ->with('error', "No se puede registrar un envío para un pedido en estado \"{$order->statusLabel()}\".");
+        if ($order->payment_status !== 'pagado') {
+            return redirect()->route('admin.orders.show', $order->id)
+                ->with('error', 'No se puede registrar un envío sin el pago registrado.');
         }
 
-        // Solo se puede enviar un pedido pagado (o más avanzado)
-        if (!in_array($order->status, ['pagado', 'enviado'])) {
-            return redirect()
-                ->route('admin.orders.show', $order->id)
-                ->with('error', 'No se puede registrar un envío hasta que el pedido tenga el pago aprobado.');
-        }
-
-        $data = $request->validated();
-        $data['shipped_at'] = $request->filled('shipped_at') ? Carbon::parse($request->shipped_at)->setTimeFrom(now()) : null;
-
-        DB::transaction(function () use ($data) {
-            $shipment = Shipment::create($data);
-            $this->statusManager->syncFromShipment($shipment);
+        DB::transaction(function () use ($request) {
+            $shipment = Shipment::create($request->validated());
+            $this->statusManager->onShipmentSent($shipment);
         });
 
-        return redirect()->route('admin.orders.show', $request->order_id)->with('success', 'Envío registrado correctamente.');
+        return redirect()->route('admin.orders.show', $request->order_id)
+            ->with('success', 'Envío registrado correctamente.');
     }
 
     public function update(UpdateShipmentRequest $request, Shipment $shipment)
     {
-        $data = $request->validated();
-        $data['shipped_at'] = $request->filled('shipped_at') ? Carbon::parse($request->shipped_at)->setTimeFrom(now()) : null;
-
-        DB::transaction(function () use ($data, $shipment) {
-            $shipment->update($data);
-            $this->statusManager->syncFromShipment($shipment->fresh());
+        DB::transaction(function () use ($request, $shipment) {
+            $shipment->update($request->validated());
+            $this->statusManager->onShipmentSent($shipment->fresh());
         });
 
         return redirect()->route('admin.orders.show', $shipment->order_id)

@@ -88,7 +88,7 @@ class CustomerController extends Controller
             }
 
             $customer->user->update($userData);
-
+            
             $customer->update([
                 'dni'        => $data['dni']        ?? null,
                 'phone'      => $data['phone']      ?? null,

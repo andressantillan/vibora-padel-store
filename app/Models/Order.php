@@ -10,92 +10,70 @@ class Order extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
-        'customer_id',
+        'customer_id', 
         'address_id',
-        'status',
-        'subtotal',
-        'discount',
-        'total',
+        'status', 
+        'payment_status', 
+        'fulfillment_status',
+        'subtotal', 
+        'discount', 
+        'total', 
         'coupon_code',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'id' => 'integer',
-            'customer_id' => 'integer',
-            'address_id' => 'integer',
-            'subtotal' => 'decimal:2',
-            'discount' => 'decimal:2',
-            'total' => 'decimal:2',
-        ];
-    }
+    const PAYMENT_STATUSES = [
+        'pendiente' => 'Pendiente',
+        'pagado'    => 'Pagado',
+    ];
 
-    const STATUSES = [
-        'pendiente'  => 'Pendiente',
-        'pagado'     => 'Pagado',
-        'enviado'    => 'Enviado',
-        'entregado'  => 'Entregado',
-        'cancelado'  => 'Cancelado',
+    const FULFILLMENT_STATUSES = [
+        'sin_preparar'   => 'Sin preparar',
+        'en_preparacion' => 'En preparación',
+        'enviado'        => 'Enviado',
     ];
 
     const STATUS_COLORS = [
-        'pendiente'  => 'warning',
-        'pagado'     => 'info',
-        'enviado'    => 'primary',
-        'entregado'  => 'success',
-        'cancelado'  => 'danger',
+        'pendiente'      => 'warning',
+        'en_preparacion' => 'info',
+        'enviado'        => 'primary',
+        'cancelado'      => 'danger',
     ];
 
-    public function customer(): BelongsTo
+    const STATUS_LABELS = [
+        'pendiente'      => 'Pendiente',
+        'en_preparacion' => 'En preparación',
+        'enviado'        => 'Enviado',
+        'cancelado'      => 'Cancelado',
+    ];
+
+    public function deriveStatus(): string
     {
-        return $this->belongsTo(Customer::class);
+        if ($this->status === 'cancelado') {
+            return 'cancelado';
+        }
+
+        if ($this->payment_status !== 'pagado') {
+            return 'pendiente';
+        }
+
+        return $this->fulfillment_status === 'enviado' ? 'enviado' : 'en_preparacion';
     }
 
-    public function address(): BelongsTo
-    {
-        return $this->belongsTo(Address::class);
-    }
+    public function paymentStatusLabel(): string { return self::PAYMENT_STATUSES[$this->payment_status] ?? $this->payment_status; }
+    public function fulfillmentStatusLabel(): string { return self::FULFILLMENT_STATUSES[$this->fulfillment_status] ?? $this->fulfillment_status; }
+    public function statusLabel(): string { return self::STATUS_LABELS[$this->status] ?? $this->status; }
+    public function statusColor(): string { return self::STATUS_COLORS[$this->status] ?? 'secondary'; }
 
-    public function items()
-    {
-        return $this->hasMany(OrderItem::class);
-    }
+    public function canBeCancelled(): bool { return $this->status === 'pendiente'; }
+    public function isPaid(): bool { return $this->payment_status === 'pagado'; }
 
-    public function statusHistory()
-    {
-        return $this->hasMany(OrderStatusHistory::class);
-    }
-
-    public function shipment()
-    {
-        return $this->hasOne(Shipment::class);
-    }
-
-    public function payments()
-    {
-        return $this->hasMany(Payment::class);
-    }
-
-    public function statusLabel(): string
-    {
-        return self::STATUSES[$this->status] ?? $this->status;
-    }
-
-    public function statusColor(): string
-    {
-        return self::STATUS_COLORS[$this->status] ?? 'secondary';
-    }
-
+    public function customer()      { return $this->belongsTo(Customer::class); }
+    public function address()       { return $this->belongsTo(Address::class); }
+    public function items()         { return $this->hasMany(OrderItem::class); }
+    public function statusHistory() { return $this->hasMany(OrderStatusHistory::class)->latest(); }
+    public function shipment()      { return $this->hasOne(Shipment::class); }
+    public function payments()      { return $this->hasMany(Payment::class); }
 }
+
+

@@ -14,12 +14,9 @@ class StorePaymentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'order_id'  => ['required', 'exists:orders,id'],
-            'method'    => ['required', 'in:efectivo,transferencia,debito,credito'],
-            'amount'    => ['required', 'numeric', 'min:0'],
-            'status'    => ['required', 'in:pendiente,aprobado,rechazado'],
-            'reference' => ['nullable', 'string', 'max:100'],
-            'paid_at'   => ['nullable', 'date'],
+            'order_id' => ['required', 'exists:orders,id'],
+            'method'   => ['required', 'in:efectivo,transferencia,tarjeta,mercadopago'],
+            'paid_at'  => ['required', 'date', 'before_or_equal:today'],
         ];
     }
 
@@ -27,8 +24,9 @@ class StorePaymentRequest extends FormRequest
     {
         return [
             'method.required' => 'El método de pago es obligatorio.',
-            'amount.required' => 'El monto es obligatorio.',
-            'amount.min'      => 'El monto no puede ser negativo.'
+            'paid_at.required' => 'La fecha de pago es obligatoria.',
+            'paid_at.date' => 'La fecha de pago no es válida.',
+            'paid_at.before_or_equal' => 'La fecha de pago no puede ser futura.',
         ];
     }
 }

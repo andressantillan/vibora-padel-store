@@ -87,7 +87,7 @@
                         <li class="d-flex gap-3 pb-3 ps-3 ms-2 {{ !$loop->last ? 'border-start' : '' }}">
                             <div>
                                 <span class="badge bg-{{ \App\Models\Order::STATUS_COLORS[$history->status] ?? 'secondary' }}">
-                                    {{ \App\Models\Order::STATUSES[$history->status] ?? $history->status }}
+                                    {{ \App\Models\Order::STATUS_LABELS[$history->status] ?? $history->status }}
                                 </span>
                                 <small class="text-muted ms-2">{{ $history->created_at->format('d/m/Y H:i') }}</small>
                                 @if($history->notes)
@@ -106,26 +106,42 @@
 
     {{-- Columna lateral --}}
     <div class="col-lg-4">
-        {{-- Estado del pedido --}}
+        {{-- Estado del pedido (dos dimensiones) --}}
         <div class="card mb-4">
             <div class="card-header fw-semibold">Estado del pedido</div>
             <div class="card-body">
-                <p class="mb-3">
-                    Estado actual:
-                    <span class="badge bg-{{ $order->statusColor() }} ms-1">{{ $order->statusLabel() }}</span>
-                </p>
+                <dl class="row mb-3 small">
+                    <dt class="col-5">Pago</dt>
+                    <dd class="col-7">
+                        <span class="badge bg-{{ $order->payment_status === 'pagado' ? 'success' : 'warning' }}">
+                            {{ $order->paymentStatusLabel() }}
+                        </span>
+                    </dd>
+
+                    <dt class="col-5">Logística</dt>
+                    <dd class="col-7">
+                        <span class="badge bg-info">{{ $order->fulfillmentStatusLabel() }}</span>
+                    </dd>
+
+                    <dt class="col-5">General</dt>
+                    <dd class="col-7">
+                        <span class="badge bg-{{ $order->statusColor() }}">{{ $order->statusLabel() }}</span>
+                    </dd>
+                </dl>
+
                 <p class="small text-muted">
                     <i class="bi bi-info-circle me-1"></i>
-                    El estado avanza automáticamente al aprobar el pago y al actualizar el envío.
+                    El estado avanza automáticamente al registrar el pago y el envío.
                 </p>
-                @if(!in_array($order->status, ['cancelado', 'entregado']))
-                    @can('orders.manage')
-                    <button type="button" class="btn btn-outline-danger btn-sm w-100"
-                            data-bs-toggle="modal" data-bs-target="#modalCancelOrder">
-                        <i class="bi bi-x-circle me-1"></i> Cancelar pedido
-                    </button>
-                    @endcan
-                @endif
+
+                @can('orders.manage')
+                    @if($order->canBeCancelled())
+                        <button type="button" class="btn btn-outline-danger btn-sm w-100"
+                                data-bs-toggle="modal" data-bs-target="#modalCancelOrder">
+                            <i class="bi bi-x-circle me-1"></i> Cancelar pedido
+                        </button>
+                    @endif
+                @endcan
             </div>
         </div>
 
@@ -149,21 +165,19 @@
         <div class="card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <span class="fw-semibold">Envío</span>
-                @if(!$order->shipment && in_array($order->status, ['pagado', 'enviado']))
-                    @can('shipments.manage')
-                    <button type="button" class="btn btn-sm btn-success"
-                            data-bs-toggle="modal" data-bs-target="#modalShipment">
-                        <i class="bi bi-plus-lg me-1"></i> Registrar
-                    </button>
-                    @endcan
-                @elseif($order->shipment && $order->status !== 'cancelado')
-                    @can('shipments.manage')
-                    <button type="button" class="btn btn-sm btn-outline-secondary"
-                            data-bs-toggle="modal" data-bs-target="#modalEditShipment">
-                        <i class="bi bi-pencil"></i>
-                    </button>
-                    @endcan
-                @endif
+                @can('shipments.manage')
+                    @if(!$order->shipment && $order->payment_status === 'pagado')
+                        <button type="button" class="btn btn-sm btn-success"
+                                data-bs-toggle="modal" data-bs-target="#modalShipment">
+                            <i class="bi bi-plus-lg me-1"></i> Registrar
+                        </button>
+                    @elseif($order->shipment)
+                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                data-bs-toggle="modal" data-bs-target="#modalEditShipment">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                    @endif
+                @endcan
             </div>
             <div class="card-body">
                 @if($order->address)
@@ -184,79 +198,51 @@
                             {{ $order->shipment->statusLabel() }}
                         </span>
                     </p>
-                    <p class="mb-1 small"><span class="fw-semibold">Transporte:</span> {{ $order->shipment->carrier }}</p>
+                    <p class="mb-1 small"><span class="fw-semibold">Transporte:</span> {{ $order->shipment->carrier ?? '—' }}</p>
                     <p class="mb-0 small">
                         <span class="fw-semibold">Seguimiento:</span>
                         {{ $order->shipment->tracking_number ?? '—' }}
                     </p>
+                @elseif($order->payment_status !== 'pagado')
+                    <p class="text-muted small mb-0">El envío estará disponible una vez registrado el pago.</p>
                 @else
-                    <p class="text-muted small mb-0">Este pedido aún no tiene envío registrado.</p>
+                    <p class="text-muted small mb-0">Pendiente de registrar el envío.</p>
                 @endif
             </div>
         </div>
 
-        {{-- Pagos --}}
+        {{-- Pago --}}
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <span class="fw-semibold">Pagos</span>
-                @if($order->payments->isEmpty() && !in_array($order->status, ['enviado', 'entregado', 'cancelado']))
-                    @can('payments.manage')
-                    <button type="button" class="btn btn-sm btn-success"
-                            data-bs-toggle="modal" data-bs-target="#modalPayment">
-                        <i class="bi bi-plus-lg me-1"></i> Registrar
-                    </button>
-                    @endcan
-                @endif
+                <span class="fw-semibold">Pago</span>
+                @can('payments.manage')
+                    @if($order->payment_status !== 'pagado' && $order->status !== 'cancelado')
+                        <button type="button" class="btn btn-sm btn-success"
+                                data-bs-toggle="modal" data-bs-target="#modalPayment">
+                            <i class="bi bi-plus-lg me-1"></i> Registrar
+                        </button>
+                    @endif
+                @endcan
             </div>
             <div class="card-body p-0">
                 @if($order->payments->isNotEmpty())
                     <ul class="list-group list-group-flush">
                         @foreach($order->payments as $payment)
                         <li class="list-group-item">
-                            <div class="d-flex justify-content-between align-items-start">
+                            <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <span class="d-block fw-semibold">{{ $payment->methodLabel() }}</span>
-                                    <small>
-                                        <span class="badge bg-{{ $payment->statusColor() }}">
-                                            {{ $payment->statusLabel() }}
-                                        </span>
-                                        @if($payment->reference)
-                                            <span class="text-muted">· {{ $payment->reference }}</span>
-                                        @endif
+                                    <span class="d-block fw-semibold">{{ ucfirst($payment->method) }}</span>
+                                    <small class="text-muted">
+                                        Pagado el {{ $payment->paid_at?->format('d/m/Y') ?? '—' }}
                                     </small>
                                 </div>
-                                <div class="text-end">
-                                    <span class="fw-semibold d-block">${{ number_format($payment->amount, 2) }}</span>
-                                    @if(!in_array($order->status, ['enviado', 'entregado', 'cancelado']))
-                                    <div class="d-flex gap-1 mt-1">
-                                        <button type="button"
-                                                class="btn btn-sm btn-outline-secondary edit-payment-btn"
-                                                data-id="{{ $payment->id }}"
-                                                data-method="{{ $payment->method }}"
-                                                data-amount="{{ $payment->amount }}"
-                                                data-status="{{ $payment->status }}"
-                                                data-reference="{{ $payment->reference }}"
-                                                data-paid="{{ $payment->paid_at ? $payment->paid_at->format('Y-m-d') : '' }}"
-                                                data-bs-toggle="modal" data-bs-target="#modalEditPayment"
-                                                title="Editar">
-                                            <i class="bi bi-pencil"></i>
-                                        </button>
-                                        <button type="button"
-                                                class="btn btn-sm btn-outline-danger delete-payment-btn"
-                                                data-id="{{ $payment->id }}"
-                                                data-bs-toggle="modal" data-bs-target="#modalDeletePayment"
-                                                title="Eliminar">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </div>
-                                    @endif
-                                </div>
+                                <span class="fw-semibold">${{ number_format($payment->amount, 2) }}</span>
                             </div>
                         </li>
                         @endforeach
                     </ul>
                 @else
-                    <p class="text-muted p-3 mb-0">Sin pagos registrados.</p>
+                    <p class="text-muted p-3 mb-0">Sin pago registrado.</p>
                 @endif
             </div>
         </div>
@@ -266,6 +252,8 @@
 {{-- ===== MODALES ===== --}}
 
 {{-- Cancelar pedido --}}
+@can('orders.manage')
+@if($order->canBeCancelled())
 <div class="modal fade" id="modalCancelOrder" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -281,12 +269,9 @@
                 </div>
                 <div class="modal-body">
                     <p>¿Estás seguro que querés cancelar el pedido #{{ $order->id }}?</p>
-                    @if(in_array($order->status, ['pagado', 'enviado']))
-                        <p class="small text-warning mb-3">
-                            <i class="bi bi-info-circle me-1"></i>
-                            El stock descontado será repuesto automáticamente.
-                        </p>
-                    @endif
+                    <p class="small text-muted mb-3">
+                        Esta acción es definitiva. Solo se pueden cancelar pedidos pendientes de pago.
+                    </p>
                     <label class="form-label fw-semibold">Motivo (opcional)</label>
                     <textarea name="notes" rows="2" class="form-control" placeholder="Motivo de la cancelación..."></textarea>
                 </div>
@@ -300,9 +285,12 @@
         </div>
     </div>
 </div>
+@endif
+@endcan
 
 {{-- Registrar envío --}}
-@if(!$order->shipment)
+@can('shipments.manage')
+@if(!$order->shipment && $order->payment_status === 'pagado')
 <div class="modal fade" id="modalShipment" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -324,8 +312,7 @@
         </div>
     </div>
 </div>
-@else
-{{-- Editar envío --}}
+@elseif($order->shipment)
 <div class="modal fade" id="modalEditShipment" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -348,8 +335,11 @@
     </div>
 </div>
 @endif
+@endcan
 
 {{-- Registrar pago --}}
+@can('payments.manage')
+@if($order->payment_status !== 'pagado' && $order->status !== 'cancelado')
 <div class="modal fade" id="modalPayment" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -361,7 +351,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    @include('admin.orders._payment_form', ['orderTotal' => $order->total])
+                    @include('admin.orders._payment_form')
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -371,124 +361,20 @@
         </div>
     </div>
 </div>
+@endif
+@endcan
 
-{{-- Editar pago --}}
-<div class="modal fade" id="modalEditPayment" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form id="editPaymentForm" method="POST">
-                @csrf
-                @method('PUT')
-                <div class="modal-header">
-                    <h5 class="modal-title">Editar pago</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Método</label>
-                        <select name="method" id="edit_method" class="form-select">
-                            @foreach(\App\Models\Payment::METHODS as $value => $label)
-                                <option value="{{ $value }}">{{ $label }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Monto</label>
-                        <div class="input-group">
-                            <span class="input-group-text">$</span>
-                            <input type="number" name="amount" id="edit_amount" class="form-control" step="0.01" min="0">
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Estado</label>
-                        <select name="status" id="edit_status" class="form-select">
-                            @foreach(\App\Models\Payment::STATUSES as $value => $label)
-                                <option value="{{ $value }}">{{ $label }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Referencia</label>
-                        <input type="text" name="reference" id="edit_reference" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Fecha de pago</label>
-                        <input type="date" name="paid_at" id="edit_paid_at" class="form-control">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Actualizar pago</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-{{-- Eliminar pago --}}
-<div class="modal fade" id="modalDeletePayment" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <form id="deletePaymentForm" method="POST">
-                @csrf
-                @method('DELETE')
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="bi bi-exclamation-triangle text-danger me-2"></i>
-                        Confirmar eliminación
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p class="mb-0">¿Eliminar este pago?</p>
-                    <p class="text-muted small mt-2 mb-0">Esta acción no se puede deshacer.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash me-1"></i> Eliminar
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<script>
-// Editar pago
-document.querySelectorAll('.edit-payment-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const form = document.getElementById('editPaymentForm');
-        form.action = `/admin/payments/${btn.dataset.id}`;
-        document.getElementById('edit_method').value    = btn.dataset.method;
-        document.getElementById('edit_amount').value     = btn.dataset.amount;
-        document.getElementById('edit_status').value     = btn.dataset.status;
-        document.getElementById('edit_reference').value  = btn.dataset.reference;
-        document.getElementById('edit_paid_at').value    = btn.dataset.paid;
-    });
-});
-
-// Eliminar pago
-document.querySelectorAll('.delete-payment-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const form = document.getElementById('deletePaymentForm');
-        form.action = `/admin/payments/${btn.dataset.id}`;
-    });
-});
-</script>
 @if($errors->any())
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        @if(old('carrier') !== null)
-            // Error vino de un form de ENVÍO (crear o editar)
+        @if(old('order_id') && old('method'))
+            new bootstrap.Modal(document.getElementById('modalPayment')).show();
+        @elseif(old('tracking_number') !== null || old('carrier') !== null)
             @if($order->shipment)
                 new bootstrap.Modal(document.getElementById('modalEditShipment')).show();
             @else
                 new bootstrap.Modal(document.getElementById('modalShipment')).show();
             @endif
-        @elseif(old('order_id'))
-            // Error vino del form de PAGO
-            new bootstrap.Modal(document.getElementById('modalPayment')).show();
         @endif
     });
 </script>

@@ -14,9 +14,9 @@ class UpdateShipmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'carrier'         => ['required', 'string', 'max:100'],
+            'carrier'         => ['nullable', 'string', 'max:100'],
             'tracking_number' => ['nullable', 'string', 'max:100'],
-            'status'          => ['required', 'in:pendiente,en_transito,entregado'],
+            'status'          => ['required', 'in:en_preparacion,enviado'],
             'shipped_at'      => ['nullable', 'date'],
         ];
     }
@@ -25,6 +25,7 @@ class UpdateShipmentRequest extends FormRequest
     {
         return [
             'carrier.required' => 'La empresa de transporte es obligatoria.',
+            'status.in'        => 'El estado del envío debe ser "en preparación" o "enviado".',
         ];
     }
 }

@@ -61,7 +61,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
 
     // Pagos
     Route::middleware('permission:payments.manage')->group(function () {
-        Route::resource('payments', PaymentController::class)->only(['store', 'update', 'destroy']);
+        Route::resource('payments', PaymentController::class)->only(['store']);
     });
 
     // Envíos
