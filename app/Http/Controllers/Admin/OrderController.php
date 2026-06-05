@@ -11,6 +11,9 @@ class OrderController extends Controller
 {
     public function __construct(protected OrderStatusManager $statusManager) {}
 
+    //TODO: Crear metodo store para disponibilizar la creacion de pedidos desde el panel admin
+    
+
     public function index(Request $request)
     {
         $query = Order::with('customer.user');
