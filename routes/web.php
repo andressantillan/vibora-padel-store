@@ -85,7 +85,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     });
     Route::middleware('permission:customers.manage')->group(function () {
         Route::resource('customers', CustomerController::class)->except(['index', 'show']);
-        Route::resource('addresses', AddressController::class)->only(['store', 'update', 'destroy']);
+    
+        Route::get('customers/{customer}/addresses/create', [AddressController::class, 'create'])->name('customers.addresses.create');
+        Route::post('customers/{customer}/addresses', [AddressController::class, 'store'])->name('customers.addresses.store');
+        Route::get('addresses/{address}/edit', [AddressController::class, 'edit'])->name('addresses.edit');
+        Route::put('addresses/{address}', [AddressController::class, 'update'])->name('addresses.update');
+        Route::delete('addresses/{address}', [AddressController::class, 'destroy'])->name('addresses.destroy');
     });
 
     // Usuarios del local (solo admin)

@@ -15,7 +15,7 @@ class StorePaymentRequest extends FormRequest
     {
         return [
             'order_id' => ['required', 'exists:orders,id'],
-            'method'   => ['required', 'in:efectivo,transferencia,tarjeta,mercadopago'],
+            'method'   => ['required', 'in:efectivo,transferencia,debito,credito'],
             'paid_at'  => ['required', 'date', 'before_or_equal:today'],
         ];
     }
@@ -27,6 +27,7 @@ class StorePaymentRequest extends FormRequest
             'paid_at.required' => 'La fecha de pago es obligatoria.',
             'paid_at.date' => 'La fecha de pago no es válida.',
             'paid_at.before_or_equal' => 'La fecha de pago no puede ser futura.',
+            'method.in' => 'El método de pago seleccionado no es válido.',
         ];
     }
 }
