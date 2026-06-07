@@ -41,7 +41,7 @@
         "CLOUDINARY_URL": "cloudinary://422976997539976:9bAYApf6YGEBxEekipFG1bjnZaI@domliw6oo",
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
-        "APP_PACKAGES_CACHE": "/tmp/packages.php",
+        "APP_PACKAGES_CACHE": "/tmp/packages_v2.php",
         "APP_ROUTES_CACHE": "/tmp/routes.php",
         "APP_SERVICES_CACHE": "/tmp/services.php",
         "CACHE_DRIVER": "array",
