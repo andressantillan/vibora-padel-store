@@ -26,7 +26,7 @@
             </style>
 
     <script>
-        var tryItOutBaseUrl = "http://localhost:8000";
+        var tryItOutBaseUrl = "https://vibora-padel-store.vercel.app";
         var useCsrf = Boolean();
         var csrfUrl = "/sanctum/csrf-cookie";
     </script>
@@ -124,7 +124,7 @@
     <div class="content">
         <h1 id="introduction">Introduction</h1>
 <aside>
-    <strong>Base URL</strong>: <code>http://localhost:8000</code>
+    <strong>Base URL</strong>: <code>https://vibora-padel-store.vercel.app/</code>
 </aside>
 <p>Bienvenido a la documentación de la <strong>API de Vibora Padel Store</strong>.</p>
 <p>Esta API permite que el sitio comercial se comunique con el backend de la tienda, ofreciendo acceso al catálogo de productos de pádel y la posibilidad de generar pedidos.</p>
@@ -156,14 +156,14 @@
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost:8000/api/products?category=paletas&amp;brand=bullpadel&amp;search=pala" \
+    --get "https://vibora-padel-store.vercel.app/api/products?category=paletas&amp;brand=bullpadel&amp;search=pala" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost:8000/api/products"
+    "https://vibora-padel-store.vercel.app/api/products"
 );
 
 const params = {
@@ -363,14 +363,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost:8000/api/products/pala-bullpadel-vertex" \
+    --get "https://vibora-padel-store.vercel.app/api/products/pala-bullpadel-vertex" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost:8000/api/products/pala-bullpadel-vertex"
+    "https://vibora-padel-store.vercel.app/api/products/pala-bullpadel-vertex"
 );
 
 const headers = {
@@ -503,14 +503,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost:8000/api/categories" \
+    --get "https://vibora-padel-store.vercel.app/api/categories" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost:8000/api/categories"
+    "https://vibora-padel-store.vercel.app/api/categories"
 );
 
 const headers = {
@@ -646,14 +646,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost:8000/api/brands" \
+    --get "https://vibora-padel-store.vercel.app/api/brands" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost:8000/api/brands"
+    "https://vibora-padel-store.vercel.app/api/brands"
 );
 
 const headers = {
@@ -839,7 +839,7 @@ Si el email ya existe, reutiliza la cuenta. El pedido nace en estado "pendiente"
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost:8000/api/orders" \
+    "https://vibora-padel-store.vercel.app/api/orders" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -864,7 +864,7 @@ Si el email ya existe, reutiliza la cuenta. El pedido nace en estado "pendiente"
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost:8000/api/orders"
+    "https://vibora-padel-store.vercel.app/api/orders"
 );
 
 const headers = {
@@ -1143,14 +1143,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost:8000/api/orders" \
+    --get "https://vibora-padel-store.vercel.app/api/orders" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost:8000/api/orders"
+    "https://vibora-padel-store.vercel.app/api/orders"
 );
 
 const headers = {
@@ -1270,14 +1270,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost:8000/api/orders/1" \
+    --get "https://vibora-padel-store.vercel.app/api/orders/1" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost:8000/api/orders/1"
+    "https://vibora-padel-store.vercel.app/api/orders/1"
 );
 
 const headers = {

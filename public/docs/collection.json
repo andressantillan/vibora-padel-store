@@ -5,12 +5,12 @@
             "key": "baseUrl",
             "type": "string",
             "name": "string",
-            "value": "http:\/\/localhost:8000"
+            "value": "https:\/\/vibora-padel-store.vercel.app\/"
         }
     ],
     "info": {
         "name": "Vibora Padel Store API Documentation",
-        "_postman_id": "8174002b-eaab-4b4f-ade1-4be7cd8adc20",
+        "_postman_id": "8eefa7f4-7e66-4d2d-aae2-04080ec69714",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },

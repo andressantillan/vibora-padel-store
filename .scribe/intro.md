@@ -3,7 +3,7 @@
 
 
 <aside>
-    <strong>Base URL</strong>: <code>http://localhost:8000</code>
+    <strong>Base URL</strong>: <code>https://vibora-padel-store.vercel.app/</code>
 </aside>
 
 Bienvenido a la documentación de la **API de Vibora Padel Store**.
