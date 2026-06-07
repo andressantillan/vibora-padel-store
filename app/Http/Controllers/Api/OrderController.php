@@ -14,9 +14,30 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
+/**
+ * @group Tienda
+ */
 class OrderController extends Controller
 {
 
+    /**
+     * Crear pedido
+     *
+     * Crea un pedido desde la tienda con los datos del invitado, dirección e items.
+     * Si el email ya existe, reutiliza la cuenta. El pedido nace en estado "pendiente".
+     *
+     * @bodyParam customer.name string required Nombre del cliente. Example: Juan Pérez
+     * @bodyParam customer.email string required Email del cliente. Example: juan@mail.com
+     * @bodyParam customer.phone string required Teléfono. Example: 2804555123
+     * @bodyParam customer.dni integer required DNI. Example: 35123456
+     * @bodyParam address.street string required Calle y número. Example: Av. Fontana 250
+     * @bodyParam address.city string required Ciudad. Example: Trelew
+     * @bodyParam address.province string required Provincia. Example: Chubut
+     * @bodyParam address.postal_code string required Código postal. Example: 9100
+     * @bodyParam items array required Lista de items del pedido.
+     * @bodyParam items[].variant_id integer required ID de la variante. Example: 1
+     * @bodyParam items[].quantity integer required Cantidad. Example: 2
+     */
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -123,6 +144,11 @@ class OrderController extends Controller
         return (new OrderResource($order))->response()->setStatusCode(201);
     }
 
+    /**
+     * Listar pedidos
+     *
+     * Devuelve una lista paginada de los pedidos del cliente autenticado.
+     */
     public function index(Request $request)
     {
         $customer = $request->user()->customer;
@@ -135,9 +161,16 @@ class OrderController extends Controller
         return OrderResource::collection($orders);
     }
 
+    /**
+     * Mostrar pedido
+     *
+     * Devuelve los detalles de un pedido específico del cliente autenticado.
+     *
+     * @urlParam order int required El ID del pedido. Example: 1
+     */
     public function show(Request $request, Order $order)
     {
-        // Solo el dueño puede ver su pedido
+        
         if ($order->customer_id !== $request->user()->customer->id) {
             abort(403, 'No autorizado.');
         }

@@ -12,8 +12,22 @@ use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
+/**
+ * @group Catálogo
+ *
+ * Endpoints públicos para explorar el catálogo de la tienda.
+ */
 class CatalogController extends Controller
 {
+    /**
+     * Listar productos
+     *
+     * Devuelve los productos activos con paginación. Permite filtrar por categoría, marca y búsqueda.
+     *
+     * @queryParam category string Slug de la categoría. Example: paletas
+     * @queryParam brand string Slug de la marca. Example: bullpadel
+     * @queryParam search string Búsqueda por nombre. Example: pala
+     */
     public function products(Request $request)
     {
         $query = Product::where('active', true)
@@ -32,6 +46,13 @@ class CatalogController extends Controller
         return ProductResource::collection($query->paginate(12));
     }
 
+    /**
+     * Detalle de producto
+     *
+     * Devuelve un producto por su slug, con todas sus variantes y stock disponible.
+     *
+     * @urlParam slug string required El slug del producto. Example: pala-bullpadel-vertex
+     */
     public function product(string $slug)
     {
         $product = Product::where('slug', $slug)
@@ -42,6 +63,11 @@ class CatalogController extends Controller
         return new ProductDetailResource($product);
     }
 
+    /**
+     * Listar categorías
+     *
+     * Devuelve las categorías activas ordenadas por nombre.
+     */
     public function categories()
     {
         return CategoryResource::collection(
@@ -49,6 +75,11 @@ class CatalogController extends Controller
         );
     }
 
+    /**
+     * Listar marcas
+     *
+     * Devuelve las marcas activas ordenadas por nombre.
+     */
     public function brands()
     {
         return BrandResource::collection(

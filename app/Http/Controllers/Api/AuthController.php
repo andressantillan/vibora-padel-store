@@ -10,8 +10,25 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
+/**
+ * @group Autenticación
+ *
+ * Endpoints para registro, inicio de sesión, cierre de sesión y perfil del usuario.
+ */
 class AuthController extends Controller
 {
+    /**
+     * Registrar usuario
+     *
+     * Crea un nuevo usuario y su perfil de cliente.
+     *
+     * @bodyParam name string required Nombre del usuario. Example: Juan Pérez
+     * @bodyParam email string required Email del usuario. Example: juan@mail.com
+     * @bodyParam password string required Contraseña del usuario. Example: password123
+     * @bodyParam password_confirmation string required Confirmación de la contraseña. Example: password123
+     * @bodyParam phone string Teléfono del usuario. Example: 2804555123
+     * @bodyParam dni integer DNI del usuario. Example: 35123456
+     */
     public function register(Request $request)
     {
         $data = $request->validate([
@@ -46,6 +63,14 @@ class AuthController extends Controller
         ], 201);
     }
 
+    /**
+     * Iniciar sesión
+     *
+     * Verifica las credenciales del usuario y devuelve un token de acceso.
+     *
+     * @bodyParam email string required Email del usuario. Example: juan@mail.com
+     * @bodyParam password string required Contraseña del usuario. Example: password123
+     */
     public function login(Request $request)
     {
         $data = $request->validate([
@@ -76,6 +101,11 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Cerrar sesión
+     *
+     * Revoca el token de acceso del usuario.
+     */
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
@@ -83,6 +113,11 @@ class AuthController extends Controller
         return response()->json(['message' => 'Sesión cerrada.']);
     }
 
+    /**
+     * Perfil del usuario
+     *
+     * Devuelve la información del usuario autenticado.
+     */
     public function me(Request $request)
     {
         $user = $request->user()->load('customer.addresses');
