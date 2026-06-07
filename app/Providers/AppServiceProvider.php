@@ -13,7 +13,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        if (class_exists(\Knuckles\Scribe\ScribeServiceProvider::class)) {
+            $this->app->register(\Knuckles\Scribe\ScribeServiceProvider::class);
+        }
     }
 
     /**

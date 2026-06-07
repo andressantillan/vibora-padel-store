@@ -78,7 +78,6 @@
     "extra": {
         "laravel": {
             "dont-discover": [
-                "knuckleswtf/scribe"
             ]
         }
     },
