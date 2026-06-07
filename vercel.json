@@ -50,7 +50,6 @@
         "APP_CONFIG_CACHE": "/tmp/config_v2.php",
         "APP_EVENTS_CACHE": "/tmp/events_v2.php",
         "APP_PACKAGES_CACHE": "/tmp/packages_v2.php",
-        "APP_ROUTES_CACHE": "/tmp/routes_v2.php",
         "APP_SERVICES_CACHE": "/tmp/services_v2.php",
         "CACHE_DRIVER": "array",
         "CACHE_STORE": "array",
