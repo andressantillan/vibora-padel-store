@@ -32,10 +32,6 @@
             "dest": "/public/favicon.ico"
         },
         {
-            "src": "/api/(.*)",
-            "dest": "/api/index.php"
-        },
-        {
             "src": "/(.*\\.(ico|txt|webp|png|jpg|svg|woff|woff2|ttf|eot))",
             "dest": "/public/$1"
         },
@@ -51,11 +47,11 @@
         "APP_KEY": "base64:1xPP40142C6Tf3rMMZ2iKEfRA2j5QWVrxlLh1u2Ybbw=",
         "VERCEL_DEMO_MODE": "false",
         "CLOUDINARY_URL": "cloudinary://422976997539976:9bAYApf6YGEBxEekipFG1bjnZaI@domliw6oo",
-        "APP_CONFIG_CACHE": "/tmp/config.php",
-        "APP_EVENTS_CACHE": "/tmp/events.php",
-        "APP_PACKAGES_CACHE": "/tmp/packages.php",
-        "APP_ROUTES_CACHE": "/tmp/routes.php",
-        "APP_SERVICES_CACHE": "/tmp/services.php",
+        "APP_CONFIG_CACHE": "/tmp/config_v2.php",
+        "APP_EVENTS_CACHE": "/tmp/events_v2.php",
+        "APP_PACKAGES_CACHE": "/tmp/packages_v2.php",
+        "APP_ROUTES_CACHE": "/tmp/routes_v2.php",
+        "APP_SERVICES_CACHE": "/tmp/services_v2.php",
         "CACHE_DRIVER": "array",
         "CACHE_STORE": "array",
         "LOG_CHANNEL": "stderr",
