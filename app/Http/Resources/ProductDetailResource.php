@@ -33,7 +33,7 @@ class ProductDetailResource extends JsonResource
                 'color'     => $v->color,
                 'size'      => $v->size,
                 'weight'    => $v->weight,
-                'price'     => $v->price,
+                'price'     => (float) $v->price,
                 'available' => $v->stock?->quantity ?? 0,
             ]),
         ];

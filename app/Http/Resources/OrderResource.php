@@ -17,16 +17,16 @@ class OrderResource extends JsonResource
         return [
             'id'         => $this->id,
             'status'     => $this->statusLabel(),
-            'subtotal'   => $this->subtotal,
-            'discount'   => $this->discount,
-            'total'      => $this->total,
+            'subtotal'   => (float) $this->subtotal,
+            'discount'   => (float) $this->discount,
+            'total'      => (float) $this->total,
             'created_at' => $this->created_at->toIso8601String(),
             'items'      => $this->whenLoaded('items', fn() => $this->items->map(fn($item) => [
                 'product'    => $item->variant->product->name ?? null,
                 'sku'        => $item->variant->sku ?? null,
                 'quantity'   => $item->quantity,
-                'unit_price' => $item->unit_price,
-                'subtotal'   => $item->subtotal(),
+                'unit_price' => (float) $item->unit_price,
+                'subtotal'   => (float) $item->subtotal(),
             ])),
         ];
     }

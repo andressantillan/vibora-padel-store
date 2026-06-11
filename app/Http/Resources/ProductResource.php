@@ -23,7 +23,7 @@ class ProductResource extends JsonResource
             'shape'       => $this->shape,
             'level'       => $this->level,
             'image'       => $this->whenLoaded('mainImage', fn() => $this->mainImage?->url),
-            'price_from'  => $this->whenLoaded('variants', fn() => $this->variants->min('price')),
+            'price_from'  => $this->whenLoaded('variants', fn() => (float) $this->variants->min('price')),
         ];
     }
 }
