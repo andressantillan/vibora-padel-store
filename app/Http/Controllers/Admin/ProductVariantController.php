@@ -14,38 +14,42 @@ class ProductVariantController extends Controller
 
     public function __construct(protected SkuGenerator $skuGenerator){}
 
-    public function store(StoreProductVariantRequest $request)
+    public function create(Product $product)
     {
-        $data    = $request->validated();
-        $product = Product::find($data['product_id']);
+        return view('admin.products.variants.create', compact('product'));
+    }
 
-        $data['sku'] = $this->skuGenerator->generate($product, $data); 
-        
+    public function store(StoreProductVariantRequest $request, Product $product)
+    {
+        $data = $request->validated();
+        $data['product_id'] = $product->id;
+        $data['sku'] = $this->skuGenerator->generate($product, $data);
+
         $variant = ProductVariant::create($data);
 
-        // Crear stock automáticamente
         $variant->stock()->create([
             'quantity'     => $data['quantity'],
             'min_quantity' => $data['min_quantity'],
         ]);
 
         return redirect()
-            ->route('admin.products.show', $data['product_id'])
-            ->with('success', 'Variante creada correctamente.');
+            ->route('admin.products.show', $product)
+            ->with('success', "Variante creada correctamente. SKU: {$data['sku']}");
+    }
+
+    public function edit(ProductVariant $variant)
+    {
+        $variant->load('product', 'stock');
+        $product = $variant->product;
+
+        return view('admin.products.variants.edit', compact('variant', 'product'));
     }
 
     public function update(UpdateProductVariantRequest $request, ProductVariant $variant)
     {
         $data = $request->validated();
-
-        if($this->shouldRegenerateSku($variant, $data)) {
-            $data['sku'] = $this->skuGenerator->generate($variant->product, $data);
-        }
-
-
         $variant->update($data);
 
-        // Actualizar stock
         $variant->stock()->updateOrCreate(
             ['product_variant_id' => $variant->id],
             [
@@ -61,14 +65,17 @@ class ProductVariantController extends Controller
 
     public function destroy(ProductVariant $variant)
     {
-        $productId = $variant->product_id;
 
-        if($variant->stock()->where('quantity', '>', 0)->exists()) {
+        $variant->load('stock');
+
+        // No permitir eliminar variantes con stock vigente
+        if ($variant->stock && $variant->stock->quantity > 0) {
             return redirect()
-                ->route('admin.products.show', $productId)
-                ->with('error', 'No se puede eliminar la variante porque hay stock existente.');
+                ->route('admin.products.show', $variant->product_id)
+                ->with('error', "No se puede eliminar la variante {$variant->sku} porque tiene stock vigente ({$variant->stock->quantity} unidades).");
         }
 
+        $productId = $variant->product_id;
         $variant->stock()->delete();
         $variant->delete();
 

@@ -32,7 +32,7 @@ Route::get('/dashboard', function () {
 Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
 
     // Catálogo: ver para todos los del local, gestionar según permiso
-        Route::middleware('permission:catalog.view')->group(function () {
+    Route::middleware('permission:catalog.view')->group(function () {
         Route::get('brands', [BrandController::class, 'index'])->name('brands.index');
         Route::get('brands/{brand}', [BrandController::class, 'show'])->name('brands.show')->whereNumber('brand');
 
@@ -47,7 +47,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
         Route::resource('brands', BrandController::class)->except(['index', 'show']);
         Route::resource('categories', CategoryController::class)->except(['index', 'show']);
         Route::resource('products', ProductController::class)->except(['index', 'show']);
-        Route::resource('variants', ProductVariantController::class)->only(['store', 'update', 'destroy']);
+        //Route::resource('variants', ProductVariantController::class)->only(['store', 'update', 'destroy']);
+        Route::get('products/{product}/variants/create', [ProductVariantController::class, 'create'])->name('products.variants.create');
+        Route::post('products/{product}/variants', [ProductVariantController::class, 'store'])->name('products.variants.store');
+        Route::get('variants/{variant}/edit', [ProductVariantController::class, 'edit'])->name('variants.edit');
+        Route::put('variants/{variant}', [ProductVariantController::class, 'update'])->name('variants.update');
+        Route::delete('variants/{variant}', [ProductVariantController::class, 'destroy'])->name('variants.destroy');
     });
 
     // Pedidos
@@ -55,13 +60,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
         Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show')->whereNumber('order');
     });
+    
     Route::middleware('permission:orders.manage')->group(function () {
         Route::patch('orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel')->whereNumber('order');
     });
 
     // Pagos
     Route::middleware('permission:payments.manage')->group(function () {
-        Route::resource('payments', PaymentController::class)->only(['store', 'update', 'destroy']);
+        Route::resource('payments', PaymentController::class)->only(['store']);
     });
 
     // Envíos
@@ -79,7 +85,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     });
     Route::middleware('permission:customers.manage')->group(function () {
         Route::resource('customers', CustomerController::class)->except(['index', 'show']);
-        Route::resource('addresses', AddressController::class)->only(['store', 'update', 'destroy']);
+    
+        Route::get('customers/{customer}/addresses/create', [AddressController::class, 'create'])->name('customers.addresses.create');
+        Route::post('customers/{customer}/addresses', [AddressController::class, 'store'])->name('customers.addresses.store');
+        Route::get('addresses/{address}/edit', [AddressController::class, 'edit'])->name('addresses.edit');
+        Route::put('addresses/{address}', [AddressController::class, 'update'])->name('addresses.update');
+        Route::delete('addresses/{address}', [AddressController::class, 'destroy'])->name('addresses.destroy');
     });
 
     // Usuarios del local (solo admin)

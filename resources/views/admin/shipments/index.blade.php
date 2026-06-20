@@ -24,7 +24,7 @@
     <div class="col-md-2">
         <label class="form-label small fw-semibold mb-1">Estado</label>
         <select name="status" class="form-select">
-            <option value="">Todos</option>
+            <option value="">Todos</option> 
             @foreach(\App\Models\Shipment::STATUSES as $value => $label)
                 <option value="{{ $value }}" {{ request('status') == $value ? 'selected' : '' }}>
                     {{ $label }}

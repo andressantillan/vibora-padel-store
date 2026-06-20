@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\DB;
 class PaymentController extends Controller
 {
     public function __construct(
-        protected PaymentValidator $validator,
         protected OrderStatusManager $statusManager,
     ) {}
 
@@ -23,66 +22,30 @@ class PaymentController extends Controller
     {
         $order = Order::findOrFail($request->order_id);
 
-        $error = $this->validator->validateStore($order, (float) $request->amount);
-        if ($error) {
-            return redirect()->route('admin.orders.show', $order->id)->with('error', $error);
+        if ($order->payment_status === 'pagado') {
+            return redirect()->route('admin.orders.show', $order->id)
+                ->with('error', 'Este pedido ya tiene el pago registrado.');
+        }
+        
+        if ($order->status === 'cancelado') {
+            return redirect()->route('admin.orders.show', $order->id)
+                ->with('error', 'No se puede registrar el pago de un pedido cancelado.');
         }
 
-        $data = $request->validated();
-        $data['paid_at'] = $request->filled('paid_at')
-            ? Carbon::parse($request->paid_at)->setTimeFrom(now())
-            : null;
-
-        DB::transaction(function () use ($data, $order) {
-            $payment = Payment::create($data);
-
-            // si el pago se aprueba, el pedido pasa a "pagado"
-            if ($payment->status === 'aprobado') {
-                $this->statusManager->syncFromPayment($order);
-            }
+        DB::transaction(function () use ($request, $order) {
+            Payment::create([
+                'order_id' => $order->id,
+                'method'   => $request->method,
+                'amount'   => $order->total,
+                'status'   => 'pagado',
+                'paid_at'  => Carbon::parse($request->paid_at)->setTimeFrom(now()),
+            ]);
+            $this->statusManager->onPaymentRegistered($order);
         });
 
         return redirect()->route('admin.orders.show', $order->id)
             ->with('success', 'Pago registrado correctamente.');
     }
 
-    public function update(UpdatePaymentRequest $request, Payment $payment)
-    {
-        $error = $this->validator->validateUpdate($payment, (float) $request->amount);
-        if ($error) {
-            return redirect()->route('admin.orders.show', $payment->order_id)->with('error', $error);
-        }
-
-        $data = $request->validated();
-        $data['paid_at'] = $request->filled('paid_at')
-            ? Carbon::parse($request->paid_at)->setTimeFrom(now())
-            : null;
-
-        DB::transaction(function () use ($data, $payment) {
-            $wasApproved = $payment->status === 'aprobado';
-            $payment->update($data);
-
-            // Si pasó a aprobado (y antes no lo estaba), sincroniza el pedido
-            if (!$wasApproved && $payment->status === 'aprobado') {
-                $this->statusManager->syncFromPayment($payment->order->fresh());
-            }
-        });
-
-        return redirect()->route('admin.orders.show', $payment->order_id)
-            ->with('success', 'Pago actualizado correctamente.');
-    }
-
-    public function destroy(Payment $payment)
-    {
-        $error = $this->validator->validateDelete($payment);
-        if ($error) {
-            return redirect()->route('admin.orders.show', $payment->order_id)->with('error', $error);
-        }
-
-        $orderId = $payment->order_id;
-        $payment->delete();
-
-        return redirect()->route('admin.orders.show', $orderId)
-            ->with('success', 'Pago eliminado correctamente.');
-    }
+    
 }

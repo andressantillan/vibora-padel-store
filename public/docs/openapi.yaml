@@ -1,0 +1,540 @@
+openapi: 3.0.3
+info:
+  title: 'Vibora Padel Store API Documentation'
+  description: ''
+  version: 1.0.0
+servers:
+  -
+    url: 'https://vibora-padel-store.vercel.app'
+tags:
+  -
+    name: Catálogo
+    description: "\nEndpoints públicos para explorar el catálogo de la tienda."
+  -
+    name: Tienda
+    description: ''
+paths:
+  /api/products:
+    get:
+      summary: 'Listar productos'
+      operationId: listarProductos
+      description: 'Devuelve los productos activos con paginación. Permite filtrar por categoría, marca y búsqueda.'
+      parameters:
+        -
+          in: query
+          name: category
+          description: 'Slug de la categoría.'
+          example: paletas
+          required: false
+          schema:
+            type: string
+            description: 'Slug de la categoría.'
+            example: paletas
+        -
+          in: query
+          name: brand
+          description: 'Slug de la marca.'
+          example: bullpadel
+          required: false
+          schema:
+            type: string
+            description: 'Slug de la marca.'
+            example: bullpadel
+        -
+          in: query
+          name: search
+          description: 'Búsqueda por nombre.'
+          example: pala
+          required: false
+          schema:
+            type: string
+            description: 'Búsqueda por nombre.'
+            example: pala
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data: []
+                  links:
+                    first: 'http://localhost:8000/api/products?page=1'
+                    last: 'http://localhost:8000/api/products?page=1'
+                    prev: null
+                    next: null
+                  meta:
+                    current_page: 1
+                    from: null
+                    last_page: 1
+                    links:
+                      -
+                        url: null
+                        label: pagination.previous
+                        page: null
+                        active: false
+                      -
+                        url: 'http://localhost:8000/api/products?page=1'
+                        label: '1'
+                        page: 1
+                        active: true
+                      -
+                        url: null
+                        label: pagination.next
+                        page: null
+                        active: false
+                    path: 'http://localhost:8000/api/products'
+                    per_page: 12
+                    to: null
+                    total: 0
+                properties:
+                  data:
+                    type: array
+                    example: []
+                  links:
+                    type: object
+                    properties:
+                      first:
+                        type: string
+                        example: 'http://localhost:8000/api/products?page=1'
+                      last:
+                        type: string
+                        example: 'http://localhost:8000/api/products?page=1'
+                      prev:
+                        type: string
+                        example: null
+                        nullable: true
+                      next:
+                        type: string
+                        example: null
+                        nullable: true
+                  meta:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                        example: 1
+                      from:
+                        type: string
+                        example: null
+                        nullable: true
+                      last_page:
+                        type: integer
+                        example: 1
+                      links:
+                        type: array
+                        example:
+                          -
+                            url: null
+                            label: pagination.previous
+                            page: null
+                            active: false
+                          -
+                            url: 'http://localhost:8000/api/products?page=1'
+                            label: '1'
+                            page: 1
+                            active: true
+                          -
+                            url: null
+                            label: pagination.next
+                            page: null
+                            active: false
+                        items:
+                          type: object
+                          properties:
+                            url:
+                              type: string
+                              example: null
+                              nullable: true
+                            label:
+                              type: string
+                              example: pagination.previous
+                            page:
+                              type: string
+                              example: null
+                              nullable: true
+                            active:
+                              type: boolean
+                              example: false
+                      path:
+                        type: string
+                        example: 'http://localhost:8000/api/products'
+                      per_page:
+                        type: integer
+                        example: 12
+                      to:
+                        type: string
+                        example: null
+                        nullable: true
+                      total:
+                        type: integer
+                        example: 0
+      tags:
+        - Catálogo
+      security: []
+  '/api/products/{slug}':
+    get:
+      summary: 'Detalle de producto'
+      operationId: detalleDeProducto
+      description: 'Devuelve un producto por su slug, con todas sus variantes y stock disponible.'
+      parameters: []
+      responses:
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'No query results for model [App\Models\Product].'
+                properties:
+                  message:
+                    type: string
+                    example: 'No query results for model [App\Models\Product].'
+      tags:
+        - Catálogo
+      security: []
+    parameters:
+      -
+        in: path
+        name: slug
+        description: 'El slug del producto.'
+        example: pala-bullpadel-vertex
+        required: true
+        schema:
+          type: string
+  /api/categories:
+    get:
+      summary: 'Listar categorías'
+      operationId: listarCategoras
+      description: 'Devuelve las categorías activas ordenadas por nombre.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    -
+                      id: 2
+                      name: Overgrips
+                      slug: overgrips
+                    -
+                      id: 1
+                      name: Paletas
+                      slug: paletas
+                    -
+                      id: 3
+                      name: Protectores
+                      slug: protectores
+                properties:
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 2
+                        name: Overgrips
+                        slug: overgrips
+                      -
+                        id: 1
+                        name: Paletas
+                        slug: paletas
+                      -
+                        id: 3
+                        name: Protectores
+                        slug: protectores
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 2
+                        name:
+                          type: string
+                          example: Overgrips
+                        slug:
+                          type: string
+                          example: overgrips
+      tags:
+        - Catálogo
+      security: []
+  /api/brands:
+    get:
+      summary: 'Listar marcas'
+      operationId: listarMarcas
+      description: 'Devuelve las marcas activas ordenadas por nombre.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    -
+                      id: 5
+                      name: Adidas
+                      slug: adidas
+                      logo: null
+                    -
+                      id: 1
+                      name: Babolat
+                      slug: babolat
+                      logo: null
+                    -
+                      id: 2
+                      name: Bullpadel
+                      slug: bullpadel
+                      logo: null
+                    -
+                      id: 7
+                      name: 'Drop Shot'
+                      slug: drop-shot
+                      logo: null
+                    -
+                      id: 3
+                      name: Head
+                      slug: head
+                      logo: null
+                    -
+                      id: 4
+                      name: Nox
+                      slug: nox
+                      logo: null
+                    -
+                      id: 9
+                      name: Royal
+                      slug: royal
+                      logo: null
+                    -
+                      id: 8
+                      name: Siux
+                      slug: siux
+                      logo: null
+                    -
+                      id: 10
+                      name: 'Star Vie'
+                      slug: star-vie
+                      logo: null
+                    -
+                      id: 6
+                      name: Wilson
+                      slug: wilson
+                      logo: null
+                properties:
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 5
+                        name: Adidas
+                        slug: adidas
+                        logo: null
+                      -
+                        id: 1
+                        name: Babolat
+                        slug: babolat
+                        logo: null
+                      -
+                        id: 2
+                        name: Bullpadel
+                        slug: bullpadel
+                        logo: null
+                      -
+                        id: 7
+                        name: 'Drop Shot'
+                        slug: drop-shot
+                        logo: null
+                      -
+                        id: 3
+                        name: Head
+                        slug: head
+                        logo: null
+                      -
+                        id: 4
+                        name: Nox
+                        slug: nox
+                        logo: null
+                      -
+                        id: 9
+                        name: Royal
+                        slug: royal
+                        logo: null
+                      -
+                        id: 8
+                        name: Siux
+                        slug: siux
+                        logo: null
+                      -
+                        id: 10
+                        name: 'Star Vie'
+                        slug: star-vie
+                        logo: null
+                      -
+                        id: 6
+                        name: Wilson
+                        slug: wilson
+                        logo: null
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 5
+                        name:
+                          type: string
+                          example: Adidas
+                        slug:
+                          type: string
+                          example: adidas
+                        logo:
+                          type: string
+                          example: null
+                          nullable: true
+      tags:
+        - Catálogo
+      security: []
+  /api/orders:
+    post:
+      summary: 'Crear pedido'
+      operationId: crearPedido
+      description: "Crea un pedido desde la tienda con los datos del invitado, dirección e items.\nSi el email ya existe, reutiliza la cuenta. El pedido nace en estado \"pendiente\"."
+      parameters: []
+      responses: {  }
+      tags:
+        - Tienda
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                customer:
+                  type: object
+                  description: ''
+                  example: []
+                  properties:
+                    name:
+                      type: string
+                      description: 'Nombre del cliente.'
+                      example: 'Juan Pérez'
+                    email:
+                      type: string
+                      description: 'Email del cliente.'
+                      example: juan@mail.com
+                    phone:
+                      type: string
+                      description: Teléfono.
+                      example: '2804555123'
+                    dni:
+                      type: integer
+                      description: DNI.
+                      example: 35123456
+                  required:
+                    - name
+                    - email
+                    - phone
+                    - dni
+                address:
+                  type: object
+                  description: ''
+                  example: []
+                  properties:
+                    street:
+                      type: string
+                      description: 'Calle y número.'
+                      example: 'Av. Fontana 250'
+                    city:
+                      type: string
+                      description: Ciudad.
+                      example: Trelew
+                    province:
+                      type: string
+                      description: Provincia.
+                      example: Chubut
+                    postal_code:
+                      type: string
+                      description: 'Código postal.'
+                      example: '9100'
+                  required:
+                    - street
+                    - city
+                    - province
+                    - postal_code
+                items:
+                  type: array
+                  description: 'Lista de items del pedido.'
+                  example:
+                    - consequatur
+                  items:
+                    type: string
+              required:
+                - items
+      security: []
+    get:
+      summary: 'Listar pedidos'
+      operationId: listarPedidos
+      description: 'Devuelve una lista paginada de los pedidos del cliente autenticado.'
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Tienda
+      security: []
+  '/api/orders/{order_id}':
+    get:
+      summary: 'Mostrar pedido'
+      operationId: mostrarPedido
+      description: 'Devuelve los detalles de un pedido específico del cliente autenticado.'
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Tienda
+      security: []
+    parameters:
+      -
+        in: path
+        name: order_id
+        description: 'The ID of the order.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+      -
+        in: path
+        name: order
+        description: 'El ID del pedido.'
+        example: 1
+        required: true
+        schema:
+          type: integer

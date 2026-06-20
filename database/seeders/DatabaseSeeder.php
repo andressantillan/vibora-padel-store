@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             //OrderTestSeeder::class,
             RolesAndPermissionsSeeder::class,
             LocalUsersSeeder::class,
+            ProductSeeder::class,
         ]);
     }
 }

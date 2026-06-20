@@ -13,7 +13,7 @@ class LocalUsersSeeder extends Seeder
         
         // ADMIN
         $admin = User::firstOrCreate(
-            ['email' => 'admin@admin.com'],
+            ['email' => 'admin@vibora.com'],
             ['name' => 'Administrador', 'password' => Hash::make('admin123@')]
         );
         $admin->syncRoles(['admin']);

@@ -1,0 +1,394 @@
+{
+    "variable": [
+        {
+            "id": "baseUrl",
+            "key": "baseUrl",
+            "type": "string",
+            "name": "string",
+            "value": "https:\/\/vibora-padel-store.vercel.app\/"
+        }
+    ],
+    "info": {
+        "name": "Vibora Padel Store API Documentation",
+        "_postman_id": "8eefa7f4-7e66-4d2d-aae2-04080ec69714",
+        "description": "",
+        "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
+    },
+    "item": [
+        {
+            "name": "Cat\u00e1logo",
+            "description": "\nEndpoints p\u00fablicos para explorar el cat\u00e1logo de la tienda.",
+            "item": [
+                {
+                    "name": "Listar productos",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/products",
+                            "query": [
+                                {
+                                    "key": "category",
+                                    "value": "paletas",
+                                    "description": "Slug de la categor\u00eda.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "brand",
+                                    "value": "bullpadel",
+                                    "description": "Slug de la marca.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "search",
+                                    "value": "pala",
+                                    "description": "B\u00fasqueda por nombre.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/products?category=paletas&brand=bullpadel&search=pala"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Devuelve los productos activos con paginaci\u00f3n. Permite filtrar por categor\u00eda, marca y b\u00fasqueda.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                }
+                            ],
+                            "code": 200,
+                            "body": "{\"data\":[],\"links\":{\"first\":\"http:\\\/\\\/localhost:8000\\\/api\\\/products?page=1\",\"last\":\"http:\\\/\\\/localhost:8000\\\/api\\\/products?page=1\",\"prev\":null,\"next\":null},\"meta\":{\"current_page\":1,\"from\":null,\"last_page\":1,\"links\":[{\"url\":null,\"label\":\"pagination.previous\",\"page\":null,\"active\":false},{\"url\":\"http:\\\/\\\/localhost:8000\\\/api\\\/products?page=1\",\"label\":\"1\",\"page\":1,\"active\":true},{\"url\":null,\"label\":\"pagination.next\",\"page\":null,\"active\":false}],\"path\":\"http:\\\/\\\/localhost:8000\\\/api\\\/products\",\"per_page\":12,\"to\":null,\"total\":0}}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Detalle de producto",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/products\/:slug",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/products\/:slug",
+                            "variable": [
+                                {
+                                    "id": "slug",
+                                    "key": "slug",
+                                    "value": "pala-bullpadel-vertex",
+                                    "description": "El slug del producto."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Devuelve un producto por su slug, con todas sus variantes y stock disponible.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                }
+                            ],
+                            "code": 404,
+                            "body": "{\n    \"message\": \"No query results for model [App\\\\Models\\\\Product].\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Listar categor\u00edas",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/categories",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/categories"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Devuelve las categor\u00edas activas ordenadas por nombre.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                }
+                            ],
+                            "code": 200,
+                            "body": "{\"data\":[{\"id\":2,\"name\":\"Overgrips\",\"slug\":\"overgrips\"},{\"id\":1,\"name\":\"Paletas\",\"slug\":\"paletas\"},{\"id\":3,\"name\":\"Protectores\",\"slug\":\"protectores\"}]}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Listar marcas",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/brands",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/brands"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Devuelve las marcas activas ordenadas por nombre.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                }
+                            ],
+                            "code": 200,
+                            "body": "{\"data\":[{\"id\":5,\"name\":\"Adidas\",\"slug\":\"adidas\",\"logo\":null},{\"id\":1,\"name\":\"Babolat\",\"slug\":\"babolat\",\"logo\":null},{\"id\":2,\"name\":\"Bullpadel\",\"slug\":\"bullpadel\",\"logo\":null},{\"id\":7,\"name\":\"Drop Shot\",\"slug\":\"drop-shot\",\"logo\":null},{\"id\":3,\"name\":\"Head\",\"slug\":\"head\",\"logo\":null},{\"id\":4,\"name\":\"Nox\",\"slug\":\"nox\",\"logo\":null},{\"id\":9,\"name\":\"Royal\",\"slug\":\"royal\",\"logo\":null},{\"id\":8,\"name\":\"Siux\",\"slug\":\"siux\",\"logo\":null},{\"id\":10,\"name\":\"Star Vie\",\"slug\":\"star-vie\",\"logo\":null},{\"id\":6,\"name\":\"Wilson\",\"slug\":\"wilson\",\"logo\":null}]}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Tienda",
+            "description": "",
+            "item": [
+                {
+                    "name": "Crear pedido",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/orders",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/orders"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"customer\":{\"name\":\"Juan P\u00e9rez\",\"email\":\"juan@mail.com\",\"phone\":\"2804555123\",\"dni\":35123456},\"address\":{\"street\":\"Av. Fontana 250\",\"city\":\"Trelew\",\"province\":\"Chubut\",\"postal_code\":\"9100\"},\"items\":[\"consequatur\"]}"
+                        },
+                        "description": "Crea un pedido desde la tienda con los datos del invitado, direcci\u00f3n e items.\nSi el email ya existe, reutiliza la cuenta. El pedido nace en estado \"pendiente\".",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Listar pedidos",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/orders",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/orders"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Devuelve una lista paginada de los pedidos del cliente autenticado.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"message\":\"Unauthenticated.\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Mostrar pedido",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/orders\/:order_id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/orders\/:order_id",
+                            "variable": [
+                                {
+                                    "id": "order_id",
+                                    "key": "order_id",
+                                    "value": "1",
+                                    "description": "The ID of the order."
+                                },
+                                {
+                                    "id": "order",
+                                    "key": "order",
+                                    "value": "1",
+                                    "description": "El ID del pedido."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Devuelve los detalles de un pedido espec\u00edfico del cliente autenticado.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"message\":\"Unauthenticated.\"}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "auth": {
+        "type": "noauth"
+    }
+}

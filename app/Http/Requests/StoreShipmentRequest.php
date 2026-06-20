@@ -15,9 +15,9 @@ class StoreShipmentRequest extends FormRequest
     {
         return [
             'order_id'        => ['required', 'exists:orders,id', 'unique:shipments,order_id'],
-            'carrier'         => ['required', 'string', 'max:100'],
+            'carrier'         => ['nullable', 'string', 'max:100'],
             'tracking_number' => ['nullable', 'string', 'max:100'],
-            'status'          => ['required', 'in:pendiente,en_transito,entregado'],
+            'status'          => ['required', 'in:en_preparacion,enviado'],
             'shipped_at'      => ['nullable', 'date'],
         ];
     }
@@ -27,6 +27,7 @@ class StoreShipmentRequest extends FormRequest
         return [
             'order_id.unique'  => 'Este pedido ya tiene un envío registrado.',
             'carrier.required' => 'La empresa de transporte es obligatoria.',
+            'status.in'        => 'El estado del envío debe ser "en preparación" o "enviado".',
         ];
     }
 }

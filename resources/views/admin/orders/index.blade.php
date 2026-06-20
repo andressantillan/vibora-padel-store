@@ -32,7 +32,7 @@
         <label class="form-label small fw-semibold mb-1">Estado</label>
         <select name="status" class="form-select">
             <option value="">Todos</option>
-            @foreach(\App\Models\Order::STATUSES as $value => $label)
+            @foreach(\App\Models\Order::STATUS_LABELS as $value => $label)
                 <option value="{{ $value }}" {{ request('status') == $value ? 'selected' : '' }}>
                     {{ $label }}
                 </option>
