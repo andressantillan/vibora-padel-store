@@ -45,7 +45,7 @@
       "source": "/(.*)",
       "headers": [
             { "key": "Access-Control-Allow-Credentials", "value": "true" },
-            { "key": "Access-Control-Allow-Origin", "value": "https://vibora-padel-store-front.vercel.app" },
+            { "key": "Access-Control-Allow-Origin", "value": "*" },
             { "key": "Access-Control-Allow-Methods", "value": "GET,OPTIONS,PATCH,DELETE,POST,PUT" },
             { "key": "Access-Control-Allow-Headers", "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization" } 
         ]
@@ -57,7 +57,6 @@
         "APP_DEBUG": "false",
         "APP_KEY": "base64:1xPP40142C6Tf3rMMZ2iKEfRA2j5QWVrxlLh1u2Ybbw=",
         "VERCEL_DEMO_MODE": "false",
-        "CLOUDINARY_URL": "cloudinary://422976997539976:9bAYApf6YGEBxEekipFG1bjnZaI@domliw6oo",
         "APP_CONFIG_CACHE": "/tmp/config_v2.php",
         "APP_EVENTS_CACHE": "/tmp/events_v2.php",
         "APP_PACKAGES_CACHE": "/tmp/packages_v2.php",
