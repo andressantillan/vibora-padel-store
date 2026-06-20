@@ -20,9 +20,9 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
-        'https://vibora-padel-store.vercel.app',  // tu doc / sitio
-        'https://viborapadel.app',          // tu tienda React/Vue cuando exista
-        '*',              // para desarrollo local
+        'https://vibora-padel-store.vercel.app',        //doc/sitio
+        'https://vibora-padel-store-front.vercel.app',  //tienda
+        'http://localhost:5173',                        //local
     ],
 
     'allowed_origins_patterns' => [],
