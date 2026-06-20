@@ -22,6 +22,7 @@ return [
     'allowed_origins' => [
         'https://vibora-padel-store.vercel.app',  // tu doc / sitio
         'https://viborapadel.app',          // tu tienda React/Vue cuando exista
+        '*',              // para desarrollo local
     ],
 
     'allowed_origins_patterns' => [],
