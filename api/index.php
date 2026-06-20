@@ -1,5 +1,8 @@
 <?php
 
+$_SERVER['SCRIPT_NAME'] = '/index.php';
+$_SERVER['SCRIPT_FILENAME'] = __DIR__ . '/../public/index.php';
+
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
 
 // Vercel usa X-Forwarded-Proto, no $_SERVER['HTTPS']
