@@ -1,4 +1,4 @@
-<div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px; min-height: 100vh;">
+<div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark sticky-top vh-100" style="width: 280px; min-height: 100vh;">
 
     {{-- Logo --}}
     <a href="{{ route('dashboard') }}" class="d-flex align-items-center mb-3 text-white text-decoration-none">

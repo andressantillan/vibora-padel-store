@@ -5,10 +5,10 @@
 @section('content')
 <div>
     {{-- Mostrar logo --}}
-    <div class="mb-4">
-        <img src="{{ asset('images/logo-login.png') }}" alt="Víbora Padel Store" style="height: 300px;">
+    <div class="mb-4 d-flex justify-content-center">
+        <img src="{{ asset('images/logo-login.png') }}" alt="Víbora Padel Store" style="height: 250px;">
     </div>
-    <h1 class="mb-4">Iniciar sesión</h1>
+    <h2 class="mb-4">Iniciar sesión</h2>
     <form method="POST" action="{{ route('login') }}" class="mx-auto" style="max-width: 400px;">
         @csrf
         @if ($errors->any())

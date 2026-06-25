@@ -11,7 +11,7 @@
     </style>
     <body>
 
-        <div class="container-fluid py-5 text-center">
+        <div class="container-fluid w-100 py-3 text-center">
             @yield('content')
         </div>
         
