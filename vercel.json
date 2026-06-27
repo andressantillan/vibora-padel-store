@@ -43,6 +43,7 @@
     "env": {
         "APP_NAME": "Vibora Padel Store",
         "APP_ENV": "production",
+        "APP_DEBUG": "true",
         "VERCEL_DEMO_MODE": "false",
         "APP_CONFIG_CACHE": "/tmp/config_v2.php",
         "APP_EVENTS_CACHE": "/tmp/events_v2.php",
