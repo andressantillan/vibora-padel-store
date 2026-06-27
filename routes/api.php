@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CatalogController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\PaymentController;
 use Illuminate\Support\Facades\Route;
 
 // ===== Públicos: catálogo =====
@@ -16,6 +17,7 @@ Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 
 Route::post('orders', [OrderController::class, 'store']);
+Route::post('create-preference', [PaymentController::class, 'createPreference']);
 
 // ===== Protegidos (Sanctum) =====
 Route::middleware('auth:sanctum')->group(function () {

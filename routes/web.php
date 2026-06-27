@@ -12,7 +12,6 @@ use App\Http\Controllers\Admin\ShipmentController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\AddressController;
 
-
 Route::get('/', function () {
     return view('home');
 });
