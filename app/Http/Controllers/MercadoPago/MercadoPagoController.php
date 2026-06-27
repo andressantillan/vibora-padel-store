@@ -10,32 +10,24 @@ class MercadoPagoController
     public static function createPreference($items)
     {
         $itemsPreference = [];
+        
+        $preferenceUrl = config('services.mercadopago.preferences_url');
+        $frontendUrl = config('services.frontend.url');
+        $backUrls = config('services.mercadopago.back_urls');
+        $mpAccessToken = config('services.mercadopago.access_token');
 
-        for($i = 0; $i < count($items); $i++) {
-            $item = $items[$i];
-            $itemsPreference[] = [
-                "title" => $item['productName'],
-                "quantity" => (int) $item['quantity'],
-                "unit_price" => (float) $item['price'],
-            ];
-        }
+        $itemsPreference = self::prepareItems($items);
 
-        $preferenceAttr = [
+        $payload = [
             "items" => $itemsPreference,
+            "back_urls" => $backUrls,
         ];
 
-        $successUrl = env('CALLBACK_URL_SUCCESS');
-        if ($successUrl) {
-            $preferenceAttr["back_urls"] = [
-                "success" => $successUrl,
-                "failure" => env('CALLBACK_URL_FAILURE'),
-                "pending" => env('CALLBACK_URL_PENDING'),
-            ];
-            $preferenceAttr["auto_return"] = "all";
+        if(str_starts_with($frontendUrl, 'https://')) {
+            $payload["auto_return"] = "all";
         }
-
-        $response = Http::withToken(env('MP_ACCESS_TOKEN'))
-            ->post('https://api.mercadopago.com/checkout/preferences', $preferenceAttr);
+        
+        $response = Http::withToken($mpAccessToken)->post($preferenceUrl, $payload);
 
         if ($response->successful()) {
             return $response->json();
@@ -45,5 +37,19 @@ class MercadoPagoController
             'error' => 'Error creating preference',
             'details' => $response->json()
         ];
+    }
+
+    private static function prepareItems($items)
+    {
+        $itemsPreference = [];
+        for($i = 0; $i < count($items); $i++) {
+            $item = $items[$i];
+            $itemsPreference[] = [
+                "title" => $item['productName'],
+                "quantity" => (int) $item['quantity'],
+                "unit_price" => (float) $item['price'],
+            ];
+        }
+        return $itemsPreference;
     }
 }
