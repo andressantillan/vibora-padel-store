@@ -1,44 +1,49 @@
 <?php
 
 namespace App\Http\Controllers\MercadoPago;
-use MercadoPago\MercadoPagoConfig;
-use MercadoPago\Client\Preference\PreferenceClient;
+
 use App\Models\Order;
+use Illuminate\Support\Facades\Http;
 
 class MercadoPagoController
 {
     public static function createPreference($items)
     {
-        // Configure MercadoPago
-        MercadoPagoConfig::setAccessToken(env('MP_ACCESS_TOKEN'));
-
-        $client = new PreferenceClient();
-
         $itemsPreference = [];
 
         for($i = 0; $i < count($items); $i++) {
             $item = $items[$i];
             $itemsPreference[] = [
                 "title" => $item['productName'],
-                "quantity" => $item['quantity'],
-                "unit_price" => $item['price'],
+                "quantity" => (int) $item['quantity'],
+                "unit_price" => (float) $item['price'],
             ];
         }
 
         $preferenceAttr = [
-            "items" => $itemsPreference
+            "items" => $itemsPreference,
         ];
 
-        $preference = $client->create($preferenceAttr);
+        $successUrl = env('CALLBACK_URL_SUCCESS');
+        if ($successUrl) {
+            $preferenceAttr["back_urls"] = [
+                "success" => $successUrl,
+                "failure" => env('CALLBACK_URL_FAILURE'),
+                "pending" => env('CALLBACK_URL_PENDING'),
+            ];
+            $preferenceAttr["auto_return"] = "all";
+        }
 
-        $preference->back_urls = [
-            "success" => env('CALLBACK_URL_SUCCESS'),
-            "failure" => env('CALLBACK_URL_FAILURE'),
-            "pending" => env('CALLBACK_URL_PENDING'),
+        $response = Http::withToken(env('MP_ACCESS_TOKEN'))
+            ->post('https://api.mercadopago.com/checkout/preferences', $preferenceAttr);
+
+        if ($response->successful()) {
+            return $response->json();
+        }
+
+        return [
+            'error' => 'Error creating preference',
+            'details' => $response->json()
         ];
-
-        $preference->auto_return = "approved";
-
-        return $preference;
     }
 }
