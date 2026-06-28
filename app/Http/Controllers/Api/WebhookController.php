@@ -94,8 +94,8 @@ class WebhookController extends Controller
             return response()->json(['success' => false, 'message' => 'Order not found'], 200);
         }
 
-        $paidAmount = $payment['transaction_amount'] ?? 0;
-        $totalOrder = $order->total ?? 0;
+        $paidAmount = (float) ($payment['transaction_amount'] ?? 0);
+        $totalOrder = (float) ($order->total ?? 0);
 
         if($paidAmount !== $totalOrder) {
             Log::warning('Payment amount does not match order total', [
