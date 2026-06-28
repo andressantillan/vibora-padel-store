@@ -74,24 +74,24 @@ class WebhookController extends Controller
         $paymentId = (string) ($data['data']['id'] ?? '');
     
         if(!$this->verifySignature($request, $paymentId)) {
-            return response()->json(['error' => 'Invalid signature'], 400);
+            return response()->json(['success' => false, 'message' => 'Invalid signature'], 400);
         }
 
         if ($type !== 'payment' || !$paymentId) {
-            return response()->json(['message' => 'Ignored event'], 200);
+            return response()->json(['success' => true, 'message' => 'Ignored event'], 200);
         }
 
         $payment = $this->getPayment($paymentId);
         
         if(!$payment) {
-            return response()->json(['error' => 'Payment not found in API'], 404);
+            return response()->json(['success' => false, 'message' => 'Payment not found in API'], 404);
         }
 
         $externalReference = (string) ($payment['external_reference'] ?? '');
         $order = Order::find($externalReference);
 
         if (!$order) {
-            return response()->json(['error' => 'Order not found'], 200);
+            return response()->json(['success' => false, 'message' => 'Order not found'], 200);
         }
 
         $paidAmount = $payment['transaction_amount'] ?? 0;
@@ -103,7 +103,7 @@ class WebhookController extends Controller
                 'paid_amount' => $paidAmount,
                 'order_total' => $totalOrder,
             ]);
-            return response()->json(['error' => 'Payment amount does not match order total'], 400);
+            return response()->json(['success' => false, 'message' => 'Payment amount does not match order total'], 400);
         }
 
         $paymentStatus = $payment['status'] ?? '';
@@ -133,6 +133,6 @@ class WebhookController extends Controller
             ]);
         }
 
-        return response()->json(['message' => 'Webhook processed successfully'], 200);
+        return response()->json(['success' => true, 'message' => 'Webhook processed successfully'], 200);
     }
 }
