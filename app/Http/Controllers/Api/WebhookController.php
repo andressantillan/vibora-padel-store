@@ -9,116 +9,130 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Order;
 use App\Models\Payment;
 use Illuminate\Support\Carbon;
+use App\Services\OrderStatusManager;
 
 class WebhookController extends Controller
 {
-    public function mercadopago(Request $request)
+    public function __construct(
+        protected OrderStatusManager $statusManager,
+    ) {}
+
+    private function verifySignature(Request $request, $dataId)
     {
-        // 1. Verificar firma de seguridad
         $secret = config('services.mercadopago.webhook_secret');
-        if ($secret) {
-            $xSignature = $request->header('x-signature');
-            $xRequestId = $request->header('x-request-id');
-            
-            if (!$xSignature) {
-                return response()->json(['error' => 'Missing signature'], 400);
-            }
+        $xSignature = $request->header('x-signature');
+        $xRequestId = $request->header('x-request-id');
 
-            // Parse signature
-            $parts = explode(',', $xSignature);
-            $ts = '';
-            $hash = '';
-            foreach ($parts as $part) {
-                if (str_starts_with(trim($part), 'ts=')) {
-                    $ts = str_replace('ts=', '', trim($part));
-                } elseif (str_starts_with(trim($part), 'v1=')) {
-                    $hash = str_replace('v1=', '', trim($part));
-                }
-            }
+        if(!$secret || !$xSignature) return false;
 
-            $dataId = $request->query('data_id', $request->query('id')); 
-            
-            if(!$dataId && $request->input('data.id')) {
-                 $dataId = $request->input('data.id');
-            }
-            
-            $manifest = "id:{$dataId};request-id:{$xRequestId};ts:{$ts};";
-            
-            $hmac = hash_hmac('sha256', $manifest, $secret);
+        $parts = preg_split('/,\s*/', $xSignature);
+        $ts = '';
+        $v1 = '';
 
-            if (!hash_equals($hmac, $hash)) {
-                return response()->json(['error' => 'Invalid signature'], 403);
+        foreach ($parts as $part) {
+            if (str_starts_with(trim($part), 'ts=')) {
+                $ts = str_replace('ts=', '', trim($part));
+            } elseif (str_starts_with(trim($part), 'v1=')) {
+                $v1 = str_replace('v1=', '', trim($part));
             }
         }
 
-        // 2. Procesar notificación
-        $action = $request->input('action') ?? $request->input('topic') ?? $request->query('topic');
+        if (!$ts || !$v1) return false;
+
+        $normalizedDataId = strtolower($dataId);
+
+        $manifest = '';
+
+        if($normalizedDataId !== "") $manifest .= "id:{$normalizedDataId};";
+        if($xRequestId) $manifest .= "request-id:{$xRequestId};";
+        $manifest .= "ts:{$ts};";
+
+        $hash = hash_hmac('sha256', $manifest, $secret);
+
+        return hash_equals($hash, $v1);
+    }
+
+    public function getPayment($paymentId){
         
-        if ($action === 'payment.created' || $action === 'payment.updated' || $action === 'payment') {
-            $paymentId = $request->input('data.id') ?? $request->query('data_id') ?? $request->query('id');
-            
-            if (!$paymentId) {
-                return response()->json(['error' => 'No payment id'], 400);
-            }
+        $mpAccessToken = config('services.mercadopago.access_token');
+        $response = Http::withToken($mpAccessToken)
+            ->get("https://api.mercadopago.com/v1/payments/{$paymentId}");
 
-            // Obtener info del pago
-            $mpAccessToken = config('services.mercadopago.access_token');
-            $response = Http::withToken($mpAccessToken)
-                ->get("https://api.mercadopago.com/v1/payments/{$paymentId}");
+        if (!$response->successful()) {
+            Log::error('Error fetching MercadoPago payment', ['id' => $paymentId, 'response' => $response->json()]);
+            return null;
+        }
 
-            if (!$response->successful()) {
-                Log::error('Error fetching MercadoPago payment', ['id' => $paymentId, 'response' => $response->json()]);
-                return response()->json(['error' => 'Payment not found in API'], 404);
-            }
+        return $response->json();
+    }
 
-            $paymentData = $response->json();
-            $externalReference = $paymentData['external_reference'] ?? null;
+    public function mercadopago(Request $request)
+    {
+        
+        $data = $request->all();
+        $type = $data['type'] ?? '';
+        $paymentId = (string) ($data['data']['id'] ?? '');
+    
+        if(!$this->verifySignature($request, $paymentId)) {
+            return response()->json(['error' => 'Invalid signature'], 400);
+        }
 
-            if (!$externalReference) {
-                return response()->json(['message' => 'No external reference, ignored'], 200);
-            }
+        if ($type !== 'payment' || !$paymentId) {
+            return response()->json(['message' => 'Ignored event'], 200);
+        }
 
-            $order = Order::find($externalReference);
-            if (!$order) {
-                $order = Order::where('code', $externalReference)->first();
-            }
+        $payment = $this->getPayment($paymentId);
+        
+        if(!$payment) {
+            return response()->json(['error' => 'Payment not found in API'], 404);
+        }
 
-            if (!$order) {
-                return response()->json(['error' => 'Order not found'], 404);
-            }
+        $externalReference = (string) ($payment['external_reference'] ?? '');
+        $order = Order::find($externalReference);
 
-            $mpStatus = $paymentData['status'];
-            $status = 'pendiente';
-            
-            if ($mpStatus === 'approved') {
-                $status = 'aprobado';
-            } elseif (in_array($mpStatus, ['rejected', 'cancelled', 'refunded', 'charged_back'])) {
-                $status = 'rechazado';
-            }
+        if (!$order) {
+            return response()->json(['error' => 'Order not found'], 200);
+        }
 
-            $payment = Payment::updateOrCreate(
+        $paidAmount = $payment['transaction_amount'] ?? 0;
+        $totalOrder = $order->total ?? 0;
+
+        if($paidAmount !== $totalOrder) {
+            Log::warning('Payment amount does not match order total', [
+                'order_id' => $order->id,
+                'paid_amount' => $paidAmount,
+                'order_total' => $totalOrder,
+            ]);
+            return response()->json(['error' => 'Payment amount does not match order total'], 400);
+        }
+
+        $paymentStatus = $payment['status'] ?? '';
+
+        $estadoPago = $paymentStatus === 'approved' ? 'pagado' : ($paymentStatus === 'pending' ? 'pendiente' : 'rechazado');
+
+        if ($estadoPago === 'pagado' && $order->payment_status !== 'pagado') {
+            $order->update(['payment_status' => 'pagado']);
+
+            //Crear payment
+            $paymentRecord = Payment::updateOrCreate(
                 ['reference' => $paymentId],
                 [
                     'order_id' => $order->id,
                     'method'   => 'mercadopago',
-                    'amount'   => $paymentData['transaction_amount'],
-                    'status'   => $status,
-                    'paid_at'  => $status === 'aprobado' && isset($paymentData['date_approved']) ? Carbon::parse($paymentData['date_approved']) : null,
+                    'amount'   => $paidAmount,
+                    'status'   => $estadoPago,
+                    'paid_at'  => Carbon::parse($payment['date_approved'] ?? now()),
                 ]
             );
+            
+            $this->statusManager->onPaymentRegistered($order);
 
-            if ($status === 'aprobado' && $order->payment_status !== 'pagado') {
-                $order->update(['payment_status' => 'pagado']);
-                
-                $order->statusHistory()->create([
-                    'status' => $order->status,
-                    'notes'  => 'Pago registrado a través de MercadoPago.',
-                ]);
-            }
-
-            return response()->json(['success' => true]);
+            $order->statusHistory()->create([
+                'status' => $order->status,
+                'notes'  => 'Pago registrado a través de MercadoPago.',
+            ]);
         }
 
-        return response()->json(['message' => 'Ignored event'], 200);
+        return response()->json(['message' => 'Webhook processed successfully'], 200);
     }
 }
