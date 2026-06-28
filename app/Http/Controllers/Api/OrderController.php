@@ -116,6 +116,7 @@ class OrderController extends Controller
 
             // 5. Crear el pedido
             $order = Order::create([
+                'code'               => strtoupper(Str::random(10)),
                 'customer_id'        => $customer->id,
                 'address_id'         => $address->id,
                 'status'             => 'pendiente',
@@ -180,5 +181,19 @@ class OrderController extends Controller
 
         return new OrderResource($order);
     }
+    /**
+     * Mostrar pedido (Público)
+     *
+     * Devuelve los detalles de un pedido específico usando el código de seguimiento.
+     * Utilizado por el frontend de la tienda.
+     *
+     * @urlParam code string required El código único del pedido. Example: ABC123XYZ0
+     */
+    public function showPublic($code)
+    {
+        $order = Order::where('code', $code)->firstOrFail();
+        $order->load('items.variant.product', 'shipment', 'payments', 'address');
 
+        return new OrderResource($order);
+    }
 }

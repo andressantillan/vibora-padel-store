@@ -14,7 +14,22 @@ class PaymentController extends Controller
     public function createPreference(Request $request)
     {
         $items = $request->input('items');
-        $preference = MercadoPagoController::createPreference($items);
+        $orderId = $request->input('order_id');
+        $preference = MercadoPagoController::createPreference($items, $orderId);
         return response()->json($preference);
+    }
+
+    public function getPaymentMethods()
+    {
+        $methods = [];
+        
+        foreach (\App\Models\Payment::METHODS as $id => $name) {
+            $methods[] = [
+                'id'   => $id,
+                'name' => $name,
+            ];
+        }
+
+        return response()->json($methods);
     }
 }

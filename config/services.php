@@ -43,6 +43,8 @@ return [
             'failure' => env('FRONTEND_URL') . '/payment-status',
             'pending' => env('FRONTEND_URL') . '/payment-status',
         ],
+        'webhook_url' => env('APP_URL') . '/api/webhooks/mercadopago',
+        'webhook_secret' => env('MP_WEBHOOK_SECRET'),
     ],
 
     'frontend' => [

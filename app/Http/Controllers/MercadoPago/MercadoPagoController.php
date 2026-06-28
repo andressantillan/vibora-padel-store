@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Http;
 
 class MercadoPagoController
 {
-    public static function createPreference($items)
+    public static function createPreference($items, $orderId = null)
     {
         $itemsPreference = [];
         
@@ -15,13 +15,19 @@ class MercadoPagoController
         $frontendUrl = config('services.frontend.url');
         $backUrls = config('services.mercadopago.back_urls');
         $mpAccessToken = config('services.mercadopago.access_token');
+        $webhookUrl = config('services.mercadopago.webhook_url', url('/api/webhooks/mercadopago'));
 
         $itemsPreference = self::prepareItems($items);
 
         $payload = [
             "items" => $itemsPreference,
             "back_urls" => $backUrls,
+            "notification_url" => $webhookUrl,
         ];
+
+        if ($orderId) {
+            $payload["external_reference"] = (string)$orderId;
+        }
 
         if(str_starts_with($frontendUrl, 'https://')) {
             $payload["auto_return"] = "all";

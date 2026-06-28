@@ -8,6 +8,11 @@
         Pedido #{{ $order->id }}
         <span class="badge bg-{{ $order->statusColor() }} ms-2">{{ $order->statusLabel() }}</span>
     </h1>
+    @if($order->code)
+        <div class="mt-1 text-muted small">
+            <i class="bi bi-upc-scan me-1"></i> Código de seguimiento: <strong>{{ $order->code }}</strong>
+        </div>
+    @endif
     <a href="{{ route('admin.orders.index') }}" class="btn btn-secondary">
         <i class="bi bi-arrow-left me-1"></i> Volver
     </a>
@@ -111,6 +116,11 @@
             <div class="card-header fw-semibold">Estado del pedido</div>
             <div class="card-body">
                 <dl class="row mb-3 small">
+                    <dt class="col-5">Código de seguimiento del pedido</dt>
+                    <dd class="col-7">
+                        <code>{{ $order->code ?? '—' }}</code>
+                    </dd>
+
                     <dt class="col-5">Pago</dt>
                     <dd class="col-7">
                         <span class="badge bg-{{ $order->payment_status === 'pagado' ? 'success' : 'warning' }}">

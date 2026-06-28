@@ -12,12 +12,20 @@ Route::get('products/{slug}', [CatalogController::class, 'product']);
 Route::get('categories', [CatalogController::class, 'categories']);
 Route::get('brands', [CatalogController::class, 'brands']);
 
+// ===== Webhooks =====
+Route::post('webhooks/mercadopago', [\App\Http\Controllers\Api\WebhookController::class, 'mercadopago']);
+
 // ===== Auth =====
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 
-Route::post('orders', [OrderController::class, 'store']);
-Route::post('create-preference', [PaymentController::class, 'createPreference']);
+// ===== Protegidos (Storefront / API Key) =====
+Route::middleware('store.api')->group(function () {
+    Route::post('orders', [OrderController::class, 'store']);
+    Route::get('orders/status/{code}', [OrderController::class, 'showPublic']);
+    Route::get('payment-methods', [PaymentController::class, 'getPaymentMethods']);
+    Route::post('create-preference', [PaymentController::class, 'createPreference']);
+});
 
 // ===== Protegidos (Sanctum) =====
 Route::middleware('auth:sanctum')->group(function () {

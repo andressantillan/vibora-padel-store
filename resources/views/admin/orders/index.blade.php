@@ -57,7 +57,12 @@
             <tbody>
                 @forelse($orders as $order)
                 <tr>
-                    <td class="fw-semibold">#{{ $order->id }}</td>
+                    <td class="fw-semibold">
+                        #{{ $order->id }}
+                        @if($order->code)
+                            <div class="small text-muted text-nowrap"><i class="bi bi-upc-scan"></i> {{ $order->code }}</div>
+                        @endif
+                    </td>
                     <td>
                         <a href="{{ route('admin.orders.show', $order) }}" class="text-decoration-none">
                             {{ $order->customer->user->name }}
