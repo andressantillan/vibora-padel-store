@@ -49,15 +49,18 @@ class CatalogController extends Controller
     /**
      * Productos destacados
      *
-     * Devuelve 3 productos aleatorios activos. Para garantizar alto rendimiento,
-     * los resultados se almacenan en caché por 10 minutos.
+     * Devuelve los primeros 3 productos activos que tengan stock disponible.
+     * Para garantizar alto rendimiento, los resultados se almacenan en caché por 10 minutos.
      */
     public function featuredProducts()
     {
         $products = \Illuminate\Support\Facades\Cache::remember('featured_products', 600, function () {
             return Product::where('active', true)
+                ->whereHas('variants.stock', function ($query) {
+                    $query->where('quantity', '>', 0);
+                })
                 ->with(['category', 'brand', 'mainImage', 'variants'])
-                ->inRandomOrder()
+                ->latest()
                 ->limit(3)
                 ->get();
         });
