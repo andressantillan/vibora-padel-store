@@ -85,7 +85,7 @@
                             :delete-route="route('admin.users.destroy', $user)"
                             item-name="el usuario {{ $user->name }}" 
                             :can-edit="auth()->user()->can('users.manage')"
-                            :can-delete="auth()->user()->can('users.manage')" />
+                            :can-delete="auth()->user()->can('users.manage') && $user->id !== auth()->id()" />
                     </td>
                 </tr>
                 @empty

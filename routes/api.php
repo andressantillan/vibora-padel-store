@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 
 // ===== Públicos: catálogo =====
 Route::get('products', [CatalogController::class, 'products']);
+Route::get('products/featured', [CatalogController::class, 'featuredProducts']);
 Route::get('products/{slug}', [CatalogController::class, 'product']);
 Route::get('categories', [CatalogController::class, 'categories']);
 Route::get('brands', [CatalogController::class, 'brands']);

@@ -36,7 +36,8 @@
             <div class="card-body">
                 <div class="mb-3">
                     <label for="role" class="form-label fw-semibold">Rol asignado <span class="text-danger">*</span></label>
-                    <select name="role" id="role" class="form-select @error('role') is-invalid @enderror">
+                    <select name="role" id="role" class="form-select @error('role') is-invalid @enderror"
+                        {{ isset($user) && $user->id === auth()->id() ? 'disabled' : '' }}>
                         <option value="">— Seleccioná un rol —</option>
                         @foreach($roles as $role)
                             <option value="{{ $role->name }}"
@@ -45,6 +46,9 @@
                             </option>
                         @endforeach
                     </select>
+                    @if(isset($user) && $user->id === auth()->id())
+                        <input type="hidden" name="role" value="{{ $user->roles->first()?->name }}">
+                    @endif
                     @error('role')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
