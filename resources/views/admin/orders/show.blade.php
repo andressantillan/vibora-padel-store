@@ -9,8 +9,9 @@
         <span class="badge bg-{{ $order->statusColor() }} ms-2">{{ $order->statusLabel() }}</span>
     </h1>
     @if($order->code)
-        <div class="mt-1 text-muted small">
-            <i class="bi bi-upc-scan me-1"></i> Código de seguimiento: <strong>{{ $order->code }}</strong>
+        <div class="mt-2 mb-2">
+            <i class="bi bi-upc-scan me-1 text-secondary"></i> <span class="text-secondary fw-semibold me-1">Código de seguimiento:</span> 
+            <span class="badge bg-primary fs-6 shadow-sm">{{ $order->code }}</span>
         </div>
     @endif
     <a href="{{ route('admin.orders.index') }}" class="btn btn-secondary">

@@ -41,6 +41,12 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
+        $customerData = $request->input('customer', []);
+        if (isset($customerData['email'])) {
+            $customerData['email'] = strtolower(trim($customerData['email']));
+            $request->merge(['customer' => $customerData]);
+        }
+
         $data = $request->validate([
             // Datos del invitado
             'customer.name'  => ['required', 'string', 'max:255'],
