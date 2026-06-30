@@ -86,38 +86,72 @@
                     @if(!empty($product->images) && $product->images->isNotEmpty())
                         <div class="d-flex flex-wrap gap-2 mb-3">
                             @foreach($product->images as $image)
-                                <div class="position-relative text-center" style="width:90px">
-                                    <img src="{{ $image->url }}"
-                                         class="rounded border mb-1 {{ $image->is_main ? 'border-primary border-2' : '' }}"
-                                         style="width:80px;height:80px;object-fit:contain">
-                                    @if($image->is_main)
-                                        <span class="badge bg-primary d-block mb-1" style="font-size:0.65rem">Principal</span>
-                                    @endif
-                                    <div class="form-check d-flex justify-content-center">
+                                <div class="position-relative text-center border border-secondary border-opacity-25 rounded p-2 bg-dark-subtle shadow-sm d-flex flex-column justify-content-between" style="width:120px; min-height:165px;">
+                                    <div>
+                                        <img src="{{ $image->url }}"
+                                             class="existing-img-preview rounded mb-2 {{ $image->is_main ? 'border border-primary border-3' : 'shadow-sm' }}"
+                                             style="width:100%;height:90px;object-fit:contain;cursor:pointer;">
+                                        
+                                        <div class="form-check d-flex justify-content-center align-items-center mb-2 p-0">
+                                            <input type="radio" 
+                                                   name="main_image" 
+                                                   value="existing_{{ $image->id }}" 
+                                                   class="form-check-input existing-main-radio m-0 cursor-pointer" 
+                                                   id="main_existing_{{ $image->id }}"
+                                                   {{ $image->is_main ? 'checked' : '' }}>
+                                            <label for="main_existing_{{ $image->id }}" class="form-check-label ms-1 cursor-pointer fw-semibold text-light" style="font-size:0.75rem">Principal</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-check d-flex justify-content-center align-items-center m-0 p-0 mt-auto">
                                         <input type="checkbox"
                                                name="delete_images[]"
                                                value="{{ $image->id }}"
-                                               class="form-check-input"
+                                               class="form-check-input m-0"
                                                id="del_img_{{ $image->id }}">
                                         <label for="del_img_{{ $image->id }}"
-                                               class="form-check-label ms-1 text-danger"
+                                               class="form-check-label ms-1 text-danger fw-semibold"
                                                style="font-size:0.75rem">Eliminar</label>
                                     </div>
                                 </div>
                             @endforeach
                         </div>
+                        
+                        <script>
+                            document.addEventListener('DOMContentLoaded', () => {
+                                const updateExistingHighlights = () => {
+                                    document.querySelectorAll('.existing-img-preview').forEach(img => {
+                                        img.classList.remove('border', 'border-primary', 'border-3');
+                                        img.classList.add('shadow-sm');
+                                    });
+                                    // Highlight only the checked one
+                                    document.querySelectorAll('.existing-main-radio:checked').forEach(radio => {
+                                        const img = radio.closest('.position-relative').querySelector('.existing-img-preview');
+                                        img.classList.remove('shadow-sm');
+                                        img.classList.add('border', 'border-primary', 'border-3');
+                                    });
+                                };
+                                
+                                document.querySelectorAll('.existing-main-radio').forEach(radio => {
+                                    radio.addEventListener('change', () => {
+                                        // when an existing radio is checked, clear new radios highlights (handled by global name 'main_image')
+                                        // trigger global highlight update
+                                        updateExistingHighlights();
+                                        if(typeof window.updateNewHighlights === 'function') window.updateNewHighlights();
+                                    });
+                                });
+                                
+                                document.querySelectorAll('.existing-img-preview').forEach(img => {
+                                    img.addEventListener('click', () => {
+                                        const radio = img.closest('.position-relative').querySelector('.existing-main-radio');
+                                        radio.checked = true;
+                                        radio.dispatchEvent(new Event('change'));
+                                    });
+                                });
+                            });
+                        </script>
                     @endif
 
-                    <input type="file"
-                           name="images[]"
-                           id="images"
-                           accept="image/*"
-                           multiple
-                           class="form-control @error('images') is-invalid @enderror">
-                    <div class="form-text">Podés subir múltiples imágenes. La primera será la principal.</div>
-                    @error('images')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
+                    <x-image-uploader name="images[]" :multiple="true" />
                 </div>
 
             </div>

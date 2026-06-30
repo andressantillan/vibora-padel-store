@@ -25,17 +25,15 @@
     {{-- Color --}}
     <div class="col-md-6">
         <label class="form-label fw-semibold">Color</label>
-        <input type="text" name="color"
-               value="{{ old('color', $variant->color ?? '') }}"
-               class="form-control" placeholder="Ej: Negro">
-    </div>
-
-    {{-- Talle --}}
-    <div class="col-md-6">
-        <label class="form-label fw-semibold">Talle</label>
-        <input type="text" name="size"
-               value="{{ old('size', $variant->size ?? '') }}"
-               class="form-control" placeholder="Ej: S, M, L">
+        <select name="color" class="form-select @error('color') is-invalid @enderror">
+            <option value="">— Seleccionar color —</option>
+            @foreach(['Negro', 'Blanco', 'Gris', 'Rojo', 'Azul', 'Verde', 'Amarillo', 'Naranja', 'Violeta', 'Rosa', 'Multicolor', 'Otro'] as $colorOption)
+                <option value="{{ $colorOption }}" {{ old('color', $variant->color ?? '') == $colorOption ? 'selected' : '' }}>
+                    {{ $colorOption }}
+                </option>
+            @endforeach
+        </select>
+        @error('color')<div class="invalid-feedback">{{ $message }}</div>@enderror
     </div>
 </div>
 

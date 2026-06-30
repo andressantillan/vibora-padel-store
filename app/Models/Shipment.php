@@ -19,6 +19,12 @@ class Shipment extends Model
         'enviado'        => 'Enviado',
     ];
 
+    const CARRIERS = [
+        'oca'              => 'OCA',
+        'andreani'         => 'Andreani',
+        'correo_argentino' => 'Correo Argentino',
+    ];
+
     const STATUS_COLORS = [
         'en_preparacion' => 'warning',
         'enviado'        => 'primary',

@@ -19,19 +19,6 @@
     </a>
 </div>
 
-@if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-@endif
-
-@if(session('error'))
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-@endif
 
 <div class="row g-4">
     {{-- Columna principal --}}
@@ -40,8 +27,8 @@
         <div class="card mb-4">
             <div class="card-header fw-semibold">Productos</div>
             <div class="card-body p-0">
-                <table class="table align-middle mb-0">
-                    <thead class="table-light">
+                <table class="table table-striped align-middle mb-0">
+                    <thead>
                         <tr>
                             <th>Producto</th>
                             <th>SKU</th>
@@ -61,7 +48,7 @@
                         </tr>
                         @endforeach
                     </tbody>
-                    <tfoot class="table-light">
+                    <tfoot>
                         <tr>
                             <td colspan="4" class="text-end">Subtotal</td>
                             <td class="text-end">${{ number_format($order->subtotal, 2) }}</td>

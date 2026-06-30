@@ -11,18 +11,7 @@
     @endcan
 </div>
 
-@if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-@endif
-@if(session('error'))
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-@endif
+
 
 <x-filter-bar :action="route('admin.brands.index')">
     <div class="col-md-4">
@@ -42,8 +31,8 @@
 
 <div class="card">
     <div class="card-body p-0">
-        <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
+        <table class="table table-striped table-hover align-middle mb-0">
+            <thead>
                 <tr>
                     <th style="width:60px">#</th>
                     <th style="width:70px">Logo</th>
@@ -80,7 +69,7 @@
                             <span class="badge bg-secondary">Inactiva</span>
                         @endif
                     </td>
-                    <td class="d-flex justify-content-end gap-2">
+                    <td>
                         <x-row-actions
                             :show-route="route('admin.brands.show', $brand)"
                             :edit-route="route('admin.brands.edit', $brand)"

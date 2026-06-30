@@ -4,18 +4,7 @@
 
 @section('content')
 
-@if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-@endif
-@if(session('error'))
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-@endif
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0">{{ $product->name }}</h1>
     @can('catalog.manage')
@@ -122,12 +111,11 @@
             </div>
             <div class="card-body p-0">
                 @if($product->variants->isNotEmpty())
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light">
+                    <table class="table table-striped table-hover align-middle mb-0">
+                        <thead>
                             <tr>
                                 <th>SKU</th>
                                 <th>Color</th>
-                                <th>Talle</th>
                                 <th>Peso</th>
                                 <th>Precio</th>
                                 <th>Stock</th>
@@ -139,7 +127,6 @@
                             <tr>
                                 <td><code>{{ $variant->sku }}</code></td>
                                 <td>{{ $variant->color ?? '—' }}</td>
-                                <td>{{ $variant->size ?? '—' }}</td>
                                 <td>{{ $variant->weight ? $variant->weight . ' kg' : '—' }}</td>
                                 <td>${{ number_format($variant->price, 2) }}</td>
                                 <td>
@@ -151,7 +138,7 @@
                                         <span class="text-muted">—</span>
                                     @endif
                                 </td>
-                                <td class="d-flex justify-content-end gap-1">
+                                <td>
                                     @can('catalog.manage')
                                     <x-variant-actions :variant="$variant" />
                                     @endcan

@@ -15,7 +15,7 @@ class StorePaymentRequest extends FormRequest
     {
         return [
             'order_id' => ['required', 'exists:orders,id'],
-            'method'   => ['required', 'in:efectivo,transferencia,debito,credito'],
+            'method'   => ['required', \Illuminate\Validation\Rule::in(array_keys(\App\Models\Payment::METHODS))],
             'paid_at'  => ['required', 'date', 'before_or_equal:today'],
         ];
     }

@@ -21,15 +21,11 @@ class PaymentController extends Controller
 
     public function getPaymentMethods()
     {
-        $methods = [];
-        
-        foreach (\App\Models\Payment::METHODS as $id => $name) {
-            $methods[] = [
-                'id'   => $id,
-                'name' => $name,
-            ];
-        }
-
-        return response()->json($methods);
+        return response()->json([
+            [
+                'id'   => 'mercadopago',
+                'name' => \App\Models\Payment::METHODS['mercadopago'] ?? 'Mercado Pago',
+            ]
+        ]);
     }
 }

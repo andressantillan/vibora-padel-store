@@ -15,7 +15,7 @@ class StoreShipmentRequest extends FormRequest
     {
         return [
             'order_id'        => ['required', 'exists:orders,id', 'unique:shipments,order_id'],
-            'carrier'         => ['nullable', 'string', 'max:100'],
+            'carrier'         => ['nullable', \Illuminate\Validation\Rule::in(array_keys(\App\Models\Shipment::CARRIERS))],
             'tracking_number' => ['nullable', 'string', 'max:100'],
             'status'          => ['required', 'in:en_preparacion,enviado'],
             'shipped_at'      => ['nullable', 'date'],

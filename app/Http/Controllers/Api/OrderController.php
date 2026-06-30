@@ -88,15 +88,19 @@ class OrderController extends Controller
                 ]
             );
 
-            // 3. Crear la dirección para este pedido
-            $address = Address::create([
-                'customer_id' => $customer->id,
-                'street'      => $data['address']['street'],
-                'city'        => $data['address']['city'],
-                'province'    => $data['address']['province'],
-                'postal_code' => $data['address']['postal_code'],
-                'is_default'  => false,
-            ]);
+            // 3. Buscar la dirección existente para este cliente, o crearla si no existe
+            $address = Address::firstOrCreate(
+                [
+                    'customer_id' => $customer->id,
+                    'street'      => $data['address']['street'],
+                    'city'        => $data['address']['city'],
+                    'province'    => $data['address']['province'],
+                    'postal_code' => $data['address']['postal_code'],
+                ],
+                [
+                    'is_default'  => false,
+                ]
+            );
 
             // 4. Validar stock y calcular totales
             $subtotal = 0;

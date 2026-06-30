@@ -99,6 +99,15 @@ class ProductController extends Controller
             }
         }
 
+        $mainImageStr = $request->input('main_image');
+        if ($mainImageStr && str_starts_with($mainImageStr, 'existing_')) {
+            $existingId = str_replace('existing_', '', $mainImageStr);
+            if (!in_array($existingId, $request->delete_images ?? [])) {
+                $product->images()->update(['is_main' => false]);
+                $product->images()->where('id', $existingId)->update(['is_main' => true]);
+            }
+        }
+
         $this->handleImages($request, $product);
 
         return redirect()
@@ -132,7 +141,14 @@ class ProductController extends Controller
             return;
         }
 
-        $mainIndex     = $request->input('main_image_index', 0);
+        $mainImageStr = $request->input('main_image', 'new_0');
+        $isNewMain = str_starts_with($mainImageStr, 'new_');
+        $mainIndex = $isNewMain ? (int) str_replace('new_', '', $mainImageStr) : -1;
+
+        if ($isNewMain) {
+            $product->images()->update(['is_main' => false]);
+        }
+
         $currentSort   = $product->images()->max('sort') ?? 0;
         $hasMainImage  = $product->images()->where('is_main', true)->exists();
 
@@ -142,7 +158,7 @@ class ProductController extends Controller
             $url = Storage::disk('cloudinary')->url($path);
             $publicId = $path;
 
-            $isMain = !$hasMainImage && $index === (int) $mainIndex;
+            $isMain = !$hasMainImage && $index === $mainIndex;
 
             ProductImage::create([
                 'product_id' => $product->id,

@@ -1,10 +1,17 @@
-<div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark sticky-top vh-100" style="width: 280px; min-height: 100vh;">
+<div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark sticky-top vh-100 border-end border-secondary border-opacity-25" style="width: 280px; min-height: 100vh;">
 
     {{-- Logo --}}
-    <a href="{{ route('dashboard') }}" class="d-flex align-items-center mb-3 text-white text-decoration-none">
-        <span class="fs-4 fw-bold">Panel de Control</span>
-    </a>
-    <hr class="border-secondary">
+    <div class="px-2 mb-4 mt-2">
+        <a href="{{ route('dashboard') }}" class="d-flex align-items-center text-white text-decoration-none gap-3">
+            <div class="bg-primary bg-gradient p-2 rounded-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 42px; height: 42px;">
+                <i class="bi bi-hexagon-fill fs-5 text-white shadow-sm" style="opacity: 0.9;"></i>
+            </div>
+            <div class="d-flex flex-column lh-1">
+                <span class="fs-5 fw-bolder text-white tracking-tight" style="letter-spacing: -0.5px;">VÍBORA STORE</span>
+                <span class="text-secondary fw-bold mt-1" style="font-size: 0.65rem; letter-spacing: 1.5px;">ADMINISTRACIÓN</span>
+            </div>
+        </a>
+    </div>
 
     {{-- Navegación --}}
     <ul class="nav nav-pills flex-column gap-1 mb-auto">
