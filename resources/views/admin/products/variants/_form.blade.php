@@ -14,11 +14,11 @@
 
     {{-- Peso --}}
     <div class="col-md-6">
-        <label class="form-label fw-semibold">Peso (kg)</label>
+        <label class="form-label fw-semibold">Peso (g)</label>
         <input type="number" name="weight"
-               value="{{ old('weight', $variant->weight ?? '') }}"
+               value="{{ old('weight', isset($variant->weight) ? (int)$variant->weight : '') }}"
                class="form-control @error('weight') is-invalid @enderror"
-               step="0.01" min="0" placeholder="Ej: 0.37">
+               step="1" min="1" placeholder="Ej: 370">
         @error('weight')<div class="invalid-feedback">{{ $message }}</div>@enderror
     </div>
 

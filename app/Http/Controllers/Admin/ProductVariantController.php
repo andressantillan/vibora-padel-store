@@ -48,6 +48,12 @@ class ProductVariantController extends Controller
     public function update(UpdateProductVariantRequest $request, ProductVariant $variant)
     {
         $data = $request->validated();
+        
+        $variant->load('product');
+        if ($this->shouldRegenerateSku($variant, $data)) {
+            $data['sku'] = $this->skuGenerator->generate($variant->product, $data);
+        }
+
         $variant->update($data);
 
         $variant->stock()->updateOrCreate(
@@ -67,6 +73,13 @@ class ProductVariantController extends Controller
     {
 
         $variant->load('stock');
+
+        // No permitir eliminar variantes vinculadas a pedidos
+        if (\App\Models\OrderItem::where('product_variant_id', $variant->id)->exists()) {
+            return redirect()
+                ->route('admin.products.show', $variant->product_id)
+                ->with('error', "No se puede eliminar la variante {$variant->sku} porque está vinculada a uno o más pedidos históricos.");
+        }
 
         // No permitir eliminar variantes con stock vigente
         if ($variant->stock && $variant->stock->quantity > 0) {

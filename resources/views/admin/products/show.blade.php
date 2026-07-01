@@ -127,7 +127,7 @@
                             <tr>
                                 <td><code>{{ $variant->sku }}</code></td>
                                 <td>{{ $variant->color ?? '—' }}</td>
-                                <td>{{ $variant->weight ? $variant->weight . ' kg' : '—' }}</td>
+                                <td>{{ $variant->weight ? (int)$variant->weight . ' g' : '—' }}</td>
                                 <td>${{ number_format($variant->price, 2) }}</td>
                                 <td>
                                     @if($variant->stock)

@@ -196,7 +196,7 @@
                             {{ $order->shipment->statusLabel() }}
                         </span>
                     </p>
-                    <p class="mb-1 small"><span class="fw-semibold">Transporte:</span> {{ $order->shipment->carrier ?? '—' }}</p>
+                    <p class="mb-1 small"><span class="fw-semibold">Transporte:</span> {{ $order->shipment->carrierLabel() }}</p>
                     <p class="mb-0 small">
                         <span class="fw-semibold">Seguimiento:</span>
                         {{ $order->shipment->tracking_number ?? '—' }}

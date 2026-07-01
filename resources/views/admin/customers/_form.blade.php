@@ -65,8 +65,10 @@
                     <label for="phone" class="form-label fw-semibold">Teléfono</label>
                     <input type="text" name="phone" id="phone"
                            value="{{ old('phone', $customer->phone ?? '') }}"
-                           class="form-control"
-                           placeholder="Ej: 2804 123456">
+                           class="form-control @error('phone') is-invalid @enderror"
+                           placeholder="Ej: 2804123456">
+                    <div class="form-text">Debe contener solo números, sin espacios ni guiones.</div>
+                    @error('phone')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
                 {{-- Fecha de nacimiento --}}
