@@ -22,7 +22,7 @@ class MercadoPagoController
         $payload = [
             "items" => $itemsPreference,
             "back_urls" => $backUrls,
-            "notification_url" => $webhookUrl,
+            // "notification_url" => $webhookUrl, // Desactivado: forzamos a que MercadoPago use el Webhook del Dashboard central
         ];
 
         if ($orderId) {
