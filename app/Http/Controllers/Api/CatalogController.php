@@ -31,6 +31,7 @@ class CatalogController extends Controller
     public function products(Request $request)
     {
         $query = Product::where('active', true)
+            ->has('variants')
             ->with(['category', 'brand', 'mainImage', 'variants']);
 
         if ($request->filled('category')) {
