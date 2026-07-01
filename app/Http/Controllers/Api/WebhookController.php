@@ -130,8 +130,6 @@ class WebhookController extends Controller
         $estadoPago = $paymentStatus === 'approved' ? 'pagado' : ($paymentStatus === 'pending' ? 'pendiente' : 'rechazado');
 
         if ($estadoPago === 'pagado' && $order->payment_status !== 'pagado') {
-            $order->update(['payment_status' => 'pagado']);
-
             //Crear payment
             $paymentRecord = Payment::updateOrCreate(
                 ['reference' => $paymentId],
@@ -144,12 +142,7 @@ class WebhookController extends Controller
                 ]
             );
             
-            $this->statusManager->onPaymentRegistered($order);
-
-            $order->statusHistory()->create([
-                'status' => $order->status,
-                'notes'  => 'Pago registrado a través de MercadoPago.',
-            ]);
+            $this->statusManager->onPaymentRegistered($order, 'Pago registrado a través de MercadoPago.');
         }
 
         return response()->json(['success' => true, 'message' => 'Webhook processed successfully'], 200);
