@@ -21,35 +21,40 @@ class WebhookController extends Controller
     {
         $secret = config('services.mercadopago.webhook_secret');
         $xSignature = $request->header('x-signature');
-        $xRequestId = $request->header('x-request-id');
 
-        if(!$secret || !$xSignature) return false;
-
-        $parts = preg_split('/,\s*/', $xSignature);
-        $ts = '';
-        $v1 = '';
-
-        foreach ($parts as $part) {
-            if (str_starts_with(trim($part), 'ts=')) {
-                $ts = str_replace('ts=', '', trim($part));
-            } elseif (str_starts_with(trim($part), 'v1=')) {
-                $v1 = str_replace('v1=', '', trim($part));
-            }
+        if (! $secret || ! $xSignature) {
+            return false;
         }
 
-        if (!$ts || !$v1) return false;
+        $parts = [];
+        foreach (explode(',', $xSignature) as $part) {
+            $pair = array_pad(explode('=', trim($part), 2), 2, '');
+            $parts[trim($pair[0])] = trim($pair[1]);
+        }
 
-        $normalizedDataId = strtolower($dataId);
+        $ts = $parts['ts'] ?? '';
+        $v1 = $parts['v1'] ?? '';
+
+        if ($ts === '' || $v1 === '') {
+            return false;
+        }
+
+        // MP normaliza data.id a minúsculas si es alfanumérico.
+        $normalizedId = strtolower($dataId);
+        $requestId = $request->header('x-request-id');
 
         $manifest = '';
+        if ($normalizedId !== '') {
+            $manifest .= 'id:'.$normalizedId.';';
+        }
+        if ($requestId) {
+            $manifest .= 'request-id:'.$requestId.';';
+        }
+        $manifest .= 'ts:'.$ts.';';
 
-        if($normalizedDataId !== "") $manifest .= "id:{$normalizedDataId};";
-        if($xRequestId) $manifest .= "request-id:{$xRequestId};";
-        $manifest .= "ts:{$ts};";
+        $expected = hash_hmac('sha256', $manifest, $secret);
 
-        $hash = hash_hmac('sha256', $manifest, $secret);
-
-        return hash_equals($hash, $v1);
+        return hash_equals($expected, $v1);
     }
 
     public function getPayment($paymentId){
