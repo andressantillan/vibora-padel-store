@@ -52,9 +52,19 @@ class WebhookController extends Controller
         }
         $manifest .= 'ts:'.$ts.';';
 
-        $expected = hash_hmac('sha256', $manifest, $secret);
+        $hash = hash_hmac('sha256', $manifest, $secret);
 
-        return hash_equals($expected, $v1);
+        Log::info('MercadoPago Signature Debug', [
+            'manifest' => $manifest,
+            'generated_hash' => $hash,
+            'received_v1' => $v1,
+            'ts' => $ts,
+            'data_id' => $dataId,
+            'x_request_id' => $requestId,
+            'secret_length' => strlen($secret),
+        ]);
+
+        return hash_equals($hash, $v1);
     }
 
     public function getPayment($paymentId){
