@@ -19,16 +19,16 @@ class OrderStatusManager
     }
 
     /** Al registrar el pago: descuenta stock y pasa fulfillment a "en preparación". */
-    public function onPaymentRegistered(Order $order): void
+    public function onPaymentRegistered(Order $order, ?string $notes = null): void
     {
-        DB::transaction(function () use ($order) {
+        DB::transaction(function () use ($order, $notes) {
             if ($order->payment_status !== 'pagado') {
                 $order->update([
                     'payment_status'     => 'pagado',
                     'fulfillment_status' => 'en_preparacion',
                 ]);
                 $this->descontarStock($order);
-                $this->refreshStatus($order, 'Pago registrado — preparando envío.');
+                $this->refreshStatus($order, $notes ?? 'Pago registrado — preparando envío.');
             }
         });
     }

@@ -10,19 +10,6 @@
     @endcan
 </div>
 
-@if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-@endif
-
-@if(session('error'))
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-@endif
 
 <x-filter-bar :action="route('admin.users.index')">
     <div class="col-md-4">
@@ -45,8 +32,8 @@
 
 <div class="card">
     <div class="card-body p-0">
-        <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
+        <table class="table table-striped table-hover align-middle mb-0">
+            <thead>
                 <tr>
                     <th style="width:60px">#</th>
                     <th>Nombre</th>
@@ -85,7 +72,7 @@
                             :delete-route="route('admin.users.destroy', $user)"
                             item-name="el usuario {{ $user->name }}" 
                             :can-edit="auth()->user()->can('users.manage')"
-                            :can-delete="auth()->user()->can('users.manage')" />
+                            :can-delete="auth()->user()->can('users.manage') && $user->id !== auth()->id()" />
                     </td>
                 </tr>
                 @empty

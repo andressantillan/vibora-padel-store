@@ -14,7 +14,7 @@ class UpdateShipmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'carrier'         => ['nullable', 'string', 'max:100'],
+            'carrier'         => ['nullable', \Illuminate\Validation\Rule::in(array_keys(\App\Models\Shipment::CARRIERS))],
             'tracking_number' => ['nullable', 'string', 'max:100'],
             'status'          => ['required', 'in:en_preparacion,enviado'],
             'shipped_at'      => ['nullable', 'date'],

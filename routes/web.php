@@ -12,10 +12,7 @@ use App\Http\Controllers\Admin\ShipmentController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\AddressController;
 
-
-Route::get('/', function () {
-    return view('home');
-});
+Route::redirect('/', '/login');
 
 Route::get('/login', function () {
     return view('login');
@@ -25,9 +22,9 @@ Route::post('/login', [LoginController::class, 'authenticate']);
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware('auth')->name('dashboard');
+Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])
+    ->middleware('auth')
+    ->name('dashboard');
 
 Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
 

@@ -31,6 +31,7 @@ class CatalogController extends Controller
     public function products(Request $request)
     {
         $query = Product::where('active', true)
+            ->has('variants')
             ->with(['category', 'brand', 'mainImage', 'variants']);
 
         if ($request->filled('category')) {
@@ -43,7 +44,29 @@ class CatalogController extends Controller
             $query->where('name', 'ilike', "%{$request->search}%");
         }
 
-        return ProductResource::collection($query->paginate(12));
+        return ProductResource::collection($query->paginate(8));
+    }
+
+    /**
+     * Productos destacados
+     *
+     * Devuelve los primeros 3 productos activos que tengan stock disponible.
+     * Para garantizar alto rendimiento, los resultados se almacenan en caché por 10 minutos.
+     */
+    public function featuredProducts()
+    {
+        $products = \Illuminate\Support\Facades\Cache::remember('featured_products', 600, function () {
+            return Product::where('active', true)
+                ->whereHas('variants.stock', function ($query) {
+                    $query->where('quantity', '>', 0);
+                })
+                ->with(['category', 'brand', 'mainImage', 'variants'])
+                ->latest()
+                ->limit(3)
+                ->get();
+        });
+
+        return ProductResource::collection($products);
     }
 
     /**

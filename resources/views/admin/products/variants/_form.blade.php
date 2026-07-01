@@ -14,28 +14,26 @@
 
     {{-- Peso --}}
     <div class="col-md-6">
-        <label class="form-label fw-semibold">Peso (kg)</label>
+        <label class="form-label fw-semibold">Peso (g)</label>
         <input type="number" name="weight"
-               value="{{ old('weight', $variant->weight ?? '') }}"
+               value="{{ old('weight', isset($variant->weight) ? (int)$variant->weight : '') }}"
                class="form-control @error('weight') is-invalid @enderror"
-               step="0.01" min="0" placeholder="Ej: 0.37">
+               step="1" min="1" placeholder="Ej: 370">
         @error('weight')<div class="invalid-feedback">{{ $message }}</div>@enderror
     </div>
 
     {{-- Color --}}
     <div class="col-md-6">
         <label class="form-label fw-semibold">Color</label>
-        <input type="text" name="color"
-               value="{{ old('color', $variant->color ?? '') }}"
-               class="form-control" placeholder="Ej: Negro">
-    </div>
-
-    {{-- Talle --}}
-    <div class="col-md-6">
-        <label class="form-label fw-semibold">Talle</label>
-        <input type="text" name="size"
-               value="{{ old('size', $variant->size ?? '') }}"
-               class="form-control" placeholder="Ej: S, M, L">
+        <select name="color" class="form-select @error('color') is-invalid @enderror">
+            <option value="">— Seleccionar color —</option>
+            @foreach(['Negro', 'Blanco', 'Gris', 'Rojo', 'Azul', 'Verde', 'Amarillo', 'Naranja', 'Violeta', 'Rosa', 'Multicolor', 'Otro'] as $colorOption)
+                <option value="{{ $colorOption }}" {{ old('color', $variant->color ?? '') == $colorOption ? 'selected' : '' }}>
+                    {{ $colorOption }}
+                </option>
+            @endforeach
+        </select>
+        @error('color')<div class="invalid-feedback">{{ $message }}</div>@enderror
     </div>
 </div>
 

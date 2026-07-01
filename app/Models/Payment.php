@@ -40,10 +40,11 @@ class Payment extends Model
     }
 
     const METHODS = [
-        'efectivo'      => 'Efectivo',
-        'transferencia' => 'Transferencia',
-        'debito'        => 'Débito',
-        'credito'       => 'Crédito',
+        'efectivo'       => 'Efectivo',
+        'transferencia'  => 'Transferencia Bancaria',
+        'debito'         => 'Tarjeta de Débito',
+        'credito'        => 'Tarjeta de Crédito',
+        'mercadopago'    => 'Mercado Pago',
     ];
 
     const STATUSES = [

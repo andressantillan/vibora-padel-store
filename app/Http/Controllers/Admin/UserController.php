@@ -83,7 +83,9 @@ class UserController extends Controller
             $user->update(['password' => Hash::make($request->password)]);
         }
 
-        $user->syncRoles([$request->role]);
+        if ($user->id !== auth()->id()) {
+            $user->syncRoles([$request->role]);
+        }
 
         return redirect()
             ->route('admin.users.index')

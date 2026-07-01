@@ -35,4 +35,20 @@ return [
         ],
     ],
 
+    'mercadopago' => [
+        'access_token' => env('MP_ACCESS_TOKEN'),
+        'preferences_url' => 'https://api.mercadopago.com/checkout/preferences',
+        'back_urls' => [
+            'success' => env('FRONTEND_URL') . '/payment-status',
+            'failure' => env('FRONTEND_URL') . '/payment-status',
+            'pending' => env('FRONTEND_URL') . '/payment-status',
+        ],
+        'webhook_url' => env('APP_URL') . '/api/webhooks/mercadopago',
+        'webhook_secret' => env('MP_WEBHOOK_SECRET'),
+    ],
+
+    'frontend' => [
+        'url' => env('FRONTEND_URL') ?? 'http://localhost:5173',
+    ],
+
 ];

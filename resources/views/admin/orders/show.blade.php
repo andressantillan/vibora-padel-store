@@ -8,24 +8,17 @@
         Pedido #{{ $order->id }}
         <span class="badge bg-{{ $order->statusColor() }} ms-2">{{ $order->statusLabel() }}</span>
     </h1>
+    @if($order->code)
+        <div class="mt-2 mb-2">
+            <i class="bi bi-upc-scan me-1 text-secondary"></i> <span class="text-secondary fw-semibold me-1">Código de seguimiento:</span> 
+            <span class="badge bg-primary fs-6 shadow-sm">{{ $order->code }}</span>
+        </div>
+    @endif
     <a href="{{ route('admin.orders.index') }}" class="btn btn-secondary">
         <i class="bi bi-arrow-left me-1"></i> Volver
     </a>
 </div>
 
-@if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-@endif
-
-@if(session('error'))
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-@endif
 
 <div class="row g-4">
     {{-- Columna principal --}}
@@ -34,8 +27,8 @@
         <div class="card mb-4">
             <div class="card-header fw-semibold">Productos</div>
             <div class="card-body p-0">
-                <table class="table align-middle mb-0">
-                    <thead class="table-light">
+                <table class="table table-striped align-middle mb-0">
+                    <thead>
                         <tr>
                             <th>Producto</th>
                             <th>SKU</th>
@@ -55,7 +48,7 @@
                         </tr>
                         @endforeach
                     </tbody>
-                    <tfoot class="table-light">
+                    <tfoot>
                         <tr>
                             <td colspan="4" class="text-end">Subtotal</td>
                             <td class="text-end">${{ number_format($order->subtotal, 2) }}</td>
@@ -111,6 +104,11 @@
             <div class="card-header fw-semibold">Estado del pedido</div>
             <div class="card-body">
                 <dl class="row mb-3 small">
+                    <dt class="col-5">Código de seguimiento del pedido</dt>
+                    <dd class="col-7">
+                        <code>{{ $order->code ?? '—' }}</code>
+                    </dd>
+
                     <dt class="col-5">Pago</dt>
                     <dd class="col-7">
                         <span class="badge bg-{{ $order->payment_status === 'pagado' ? 'success' : 'warning' }}">
@@ -198,7 +196,7 @@
                             {{ $order->shipment->statusLabel() }}
                         </span>
                     </p>
-                    <p class="mb-1 small"><span class="fw-semibold">Transporte:</span> {{ $order->shipment->carrier ?? '—' }}</p>
+                    <p class="mb-1 small"><span class="fw-semibold">Transporte:</span> {{ $order->shipment->carrierLabel() }}</p>
                     <p class="mb-0 small">
                         <span class="fw-semibold">Seguimiento:</span>
                         {{ $order->shipment->tracking_number ?? '—' }}

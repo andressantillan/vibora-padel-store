@@ -24,14 +24,7 @@
             <small class="text-muted d-block mt-1">Logo actual. Subí uno nuevo para reemplazarlo.</small>
         </div>
     @endif
-    <input type="file"
-           name="logo"
-           id="logo"
-           accept="image/*"
-           class="form-control @error('logo') is-invalid @enderror">
-    @error('logo')
-        <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
+    <x-image-uploader name="logo" :multiple="false" />
 </div>
 
 {{-- Estado --}}

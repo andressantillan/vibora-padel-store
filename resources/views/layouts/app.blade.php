@@ -16,7 +16,8 @@
                 @include('components.sidebar')
             @endauth
 
-            <div class="flex-grow-1 p-4 bg-light text-dark">
+            <div class="flex-grow-1 p-4">
+                @include('components.flash-messages')
                 @yield('content')
             </div>
 

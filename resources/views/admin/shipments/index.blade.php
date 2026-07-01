@@ -7,12 +7,6 @@
     <h1 class="h3 mb-0">Envíos</h1>
 </div>
 
-@if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-@endif
 
 {{-- Filtros --}}
 <x-filter-bar :action="route('admin.shipments.index')">
@@ -41,8 +35,8 @@
 
 <div class="card">
     <div class="card-body p-0">
-        <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
+        <table class="table table-striped table-hover align-middle mb-0">
+            <thead>
                 <tr>
                     <th style="width:90px">Pedido</th>
                     <th>Cliente</th>

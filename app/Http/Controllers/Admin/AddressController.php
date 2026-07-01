@@ -62,6 +62,13 @@ class AddressController extends Controller
     public function destroy(Address $address)
     {
         $customerId = $address->customer_id;
+
+        if ($address->orders()->exists()) {
+            return redirect()
+                ->route('admin.customers.show', $customerId)
+                ->with('error', 'No se puede eliminar esta dirección porque está asociada a uno o más pedidos.');
+        }
+
         $address->delete();
 
         return redirect()

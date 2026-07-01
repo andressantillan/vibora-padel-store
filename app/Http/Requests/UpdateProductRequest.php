@@ -28,8 +28,8 @@ class UpdateProductRequest extends FormRequest
 
             // Imágenes
             'images'           => ['nullable', 'array'],
-            'images.*'         => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
-            'main_image_index' => ['nullable', 'integer'],
+            'images.*'         => ['image', 'mimes:jpg,jpeg,png,webp,avif', 'max:2048'],
+            'main_image'       => ['nullable', 'string'],
             'delete_images'    => ['nullable', 'array'],
             'delete_images.*'  => ['exists:product_images,id'],
         ];
@@ -42,6 +42,9 @@ class UpdateProductRequest extends FormRequest
             'brand_id.required'    => 'La marca es obligatoria.',
             'name.required'        => 'El nombre del producto es obligatorio.',
             'name.unique'          => 'Ya existe un producto con ese nombre.',
+            'images.*.image'       => 'Cada archivo debe ser una imagen.',
+            'images.*.mimes'       => 'Las imágenes deben estar en formato jpg, jpeg, png, webp o avif.',
+            'images.*.max'         => 'Cada imagen no puede superar 2MB.',
             'shape.in'             => 'La forma seleccionada no es válida.',
             'level.in'             => 'El nivel seleccionado no es válido.',
         ];

@@ -19,6 +19,12 @@ class Shipment extends Model
         'enviado'        => 'Enviado',
     ];
 
+    const CARRIERS = [
+        'oca'              => 'OCA',
+        'andreani'         => 'Andreani',
+        'correo_argentino' => 'Correo Argentino',
+    ];
+
     const STATUS_COLORS = [
         'en_preparacion' => 'warning',
         'enviado'        => 'primary',
@@ -28,4 +34,5 @@ class Shipment extends Model
 
     public function statusLabel(): string { return self::STATUSES[$this->status] ?? $this->status; }
     public function statusColor(): string { return self::STATUS_COLORS[$this->status] ?? 'secondary'; }
+    public function carrierLabel(): string { return $this->carrier ? (self::CARRIERS[$this->carrier] ?? ucfirst($this->carrier)) : '—'; }
 }

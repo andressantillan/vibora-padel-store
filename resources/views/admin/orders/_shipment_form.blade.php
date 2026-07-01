@@ -1,10 +1,14 @@
 {{-- Transporte --}}
 <div class="mb-3">
     <label class="form-label fw-semibold">Empresa de transporte</label>
-    <input type="text" name="carrier"
-           value="{{ old('carrier', $shipment->carrier ?? '') }}"
-           class="form-control @error('carrier') is-invalid @enderror"
-           placeholder="Ej: OCA, Andreani, Correo Argentino">
+    <select name="carrier" class="form-select @error('carrier') is-invalid @enderror">
+        <option value="">— Seleccioná la empresa —</option>
+        @foreach(\App\Models\Shipment::CARRIERS as $value => $label)
+            <option value="{{ $value }}" {{ old('carrier', $shipment->carrier ?? '') == $value ? 'selected' : '' }}>
+                {{ $label }}
+            </option>
+        @endforeach
+    </select>
     @error('carrier')<div class="invalid-feedback">{{ $message }}</div>@enderror
 </div>
 

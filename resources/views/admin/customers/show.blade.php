@@ -17,6 +17,8 @@
     @endcan
 </div>
 
+
+
 <div class="row g-4">
     {{-- Datos del cliente --}}
     <div class="col-md-6">
@@ -98,8 +100,8 @@
             </div>
             <div class="card-body p-0 scrollable-list">
                 @if($customer->orders->isNotEmpty())
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light" style="position: sticky; top: 0; z-index: 1;">
+                    <table class="table table-striped table-hover align-middle mb-0">
+                        <thead style="position: sticky; top: 0; z-index: 1;">
                             <tr>
                                 <th>#</th>
                                 <th>Estado</th>
