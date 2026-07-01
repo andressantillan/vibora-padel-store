@@ -44,7 +44,7 @@ class CatalogController extends Controller
             $query->where('name', 'ilike', "%{$request->search}%");
         }
 
-        return ProductResource::collection($query->paginate(12));
+        return ProductResource::collection($query->paginate(8));
     }
 
     /**

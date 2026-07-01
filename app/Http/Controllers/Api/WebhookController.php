@@ -68,16 +68,19 @@ class WebhookController extends Controller
 
     public function mercadopago(Request $request)
     {
+        Log::info('MercadoPago Webhook Received', $request->all());
         
         $data = $request->all();
         $type = $data['type'] ?? '';
         $paymentId = (string) ($data['data']['id'] ?? '');
     
         if(!$this->verifySignature($request, $paymentId)) {
+            Log::warning('MercadoPago Webhook: Invalid signature', ['paymentId' => $paymentId]);
             return response()->json(['success' => false, 'message' => 'Invalid signature'], 400);
         }
 
         if ($type !== 'payment' || !$paymentId) {
+            Log::info('MercadoPago Webhook: Ignored event', ['type' => $type, 'paymentId' => $paymentId]);
             return response()->json(['success' => true, 'message' => 'Ignored event'], 200);
         }
 
